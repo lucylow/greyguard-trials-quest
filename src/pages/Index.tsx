@@ -171,28 +171,49 @@ const Index = () => {
     try {
       setChatHistory(prev => [...prev, {
         id: Date.now() + 1,
-        text: "Processing your query with ZK-proof privacy protection...",
+        text: "Processing your query with ZK-proof privacy protection using Fetch.ai agents...",
         sender: 'system',
         timestamp: new Date().toISOString()
       }]);
 
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setMatches(demoMatches);
-      
-      setChatHistory(prev => [...prev, {
-        id: Date.now() + 2,
-        text: `Found ${demoMatches.length} matching clinical trials. Your health data remained encrypted throughout the matching process.`,
-        sender: 'system',
-        timestamp: new Date().toISOString(),
-        data: demoMatches
-      }]);
-      
-      toast({
-        title: "Trials Found!",
-        description: `Found ${demoMatches.length} matching trials with privacy protection.`,
+      // Call the real Supabase edge function
+      const response = await fetch('/functions/v1/clinical-trial-matcher', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          symptoms: symptoms.trim(),
+          location: location.trim() || 'any',
+          age: null,
+          patientId: `patient_${Date.now()}`
+        })
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.matches) {
+        setMatches(data.matches);
+        
+        setChatHistory(prev => [...prev, {
+          id: Date.now() + 2,
+          text: `Found ${data.matches.length} matching clinical trials using Fetch.ai agents. Your health data remained encrypted throughout the matching process.`,
+          sender: 'system',
+          timestamp: new Date().toISOString(),
+          data: data.matches
+        }]);
+        
+        toast({
+          title: "Trials Found!",
+          description: `Found ${data.matches.length} matching trials with privacy protection using ASI:One API.`,
+        });
+      } else {
+        throw new Error(data.error || 'No matches found');
+      }
       
     } catch (error) {
       console.error('Error:', error);
