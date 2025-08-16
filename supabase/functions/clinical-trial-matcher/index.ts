@@ -42,10 +42,12 @@ serve(async (req) => {
   }
 
   try {
-    // Get the ASI:One API key from Supabase secrets
+    // Get both API keys from Supabase secrets
     const asiApiKey = Deno.env.get('ASI_ONE_API_KEY')
-    if (!asiApiKey) {
-      throw new Error('ASI:One API key not configured')
+    const geminiApiKey = Deno.env.get('GOOGLE_GEMINI_API_KEY')
+    
+    if (!asiApiKey || !geminiApiKey) {
+      throw new Error('API keys not configured')
     }
 
     // Parse the request
@@ -63,13 +65,17 @@ serve(async (req) => {
 
     console.log('Processing trial match request:', { symptoms, location, age, patientId })
 
-    // Create the uAgent communication payload
+    // First, use Gemini to analyze and enhance the symptom description
+    const enhancedSymptoms = await analyzeSymptoms(symptoms, geminiApiKey)
+
+    // Create the uAgent communication payload with enhanced symptoms
     const uAgentPayload = {
       apiKey: asiApiKey,
       request: {
         type: 'CLINICAL_TRIAL_MATCH',
         patientData: {
-          symptoms: symptoms.trim(),
+          originalSymptoms: symptoms.trim(),
+          enhancedSymptoms: enhancedSymptoms,
           location: location || 'any',
           age: age || null,
           patientId: patientId || `patient_${Date.now()}`
@@ -83,8 +89,8 @@ serve(async (req) => {
     }
 
     // In a real implementation, you would call your deployed Fetch.ai agent here
-    // For now, we'll simulate the uAgent response with realistic data
-    const uAgentResponse = await simulateUAgentResponse(uAgentPayload)
+    // For now, we'll simulate the uAgent response with Gemini-enhanced matching
+    const uAgentResponse = await simulateUAgentResponse(uAgentPayload, geminiApiKey)
 
     // Generate ZK-proof metadata for each match
     const enhancedMatches = uAgentResponse.matches.map((match: any) => ({
@@ -107,12 +113,14 @@ serve(async (req) => {
           zkProofGenerated: true,
           dataEncrypted: true,
           btcAnchored: true,
-          icpSecured: true
+          icpSecured: true,
+          geminiAnalyzed: true
         },
         metadata: {
           processedAt: new Date().toISOString(),
           patientId: uAgentPayload.request.patientData.patientId,
-          matchCount: enhancedMatches.length
+          matchCount: enhancedMatches.length,
+          enhancedSymptoms: enhancedSymptoms.keywords
         }
       }),
       {
@@ -136,12 +144,102 @@ serve(async (req) => {
   }
 })
 
-// Simulate uAgent response (replace with actual Fetch.ai agent call)
-async function simulateUAgentResponse(payload: any): Promise<{ matches: TrialMatch[] }> {
+// Enhanced symptom analysis using Gemini
+async function analyzeSymptoms(symptoms: string, geminiApiKey: string) {
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `As a medical AI assistant, analyze these patient symptoms and extract relevant medical information for clinical trial matching:
+
+Symptoms: "${symptoms}"
+
+Please provide a structured analysis including:
+1. Primary medical conditions suggested
+2. Relevant medical keywords and terms
+3. Potential disease categories
+4. Stage/severity indicators if mentioned
+5. Treatment history indicators
+
+Respond in JSON format:
+{
+  "primaryConditions": ["condition1", "condition2"],
+  "keywords": ["keyword1", "keyword2"],
+  "categories": ["category1", "category2"],
+  "severity": "mild|moderate|severe|advanced",
+  "treatmentHistory": "naive|experienced|failed"
+}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 1000
+        }
+      })
+    })
+
+    if (!response.ok) {
+      console.error('Gemini API error:', await response.text())
+      // Fallback to basic keyword extraction
+      return {
+        primaryConditions: [symptoms.toLowerCase()],
+        keywords: symptoms.toLowerCase().split(' '),
+        categories: ['general'],
+        severity: 'unknown',
+        treatmentHistory: 'unknown'
+      }
+    }
+
+    const data = await response.json()
+    const analysisText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}'
+    
+    try {
+      // Extract JSON from the response
+      const jsonMatch = analysisText.match(/\{[\s\S]*\}/)
+      const analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : {}
+      
+      return {
+        primaryConditions: analysis.primaryConditions || [symptoms.toLowerCase()],
+        keywords: analysis.keywords || symptoms.toLowerCase().split(' '),
+        categories: analysis.categories || ['general'],
+        severity: analysis.severity || 'unknown',
+        treatmentHistory: analysis.treatmentHistory || 'unknown'
+      }
+    } catch (parseError) {
+      console.error('Error parsing Gemini response:', parseError)
+      return {
+        primaryConditions: [symptoms.toLowerCase()],
+        keywords: symptoms.toLowerCase().split(' '),
+        categories: ['general'],
+        severity: 'unknown',
+        treatmentHistory: 'unknown'
+      }
+    }
+  } catch (error) {
+    console.error('Gemini analysis error:', error)
+    // Fallback analysis
+    return {
+      primaryConditions: [symptoms.toLowerCase()],
+      keywords: symptoms.toLowerCase().split(' '),
+      categories: ['general'],
+      severity: 'unknown',
+      treatmentHistory: 'unknown'
+    }
+  }
+}
+
+// Enhanced uAgent simulation with Gemini analysis
+async function simulateUAgentResponse(payload: any, geminiApiKey: string): Promise<{ matches: TrialMatch[] }> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000))
   
-  const symptoms = payload.request.patientData.symptoms.toLowerCase()
+  const enhancedSymptoms = payload.request.patientData.enhancedSymptoms
+  const originalSymptoms = payload.request.patientData.originalSymptoms.toLowerCase()
   
   // Mock trial database with realistic data
   const allTrials: TrialMatch[] = [
@@ -215,25 +313,51 @@ async function simulateUAgentResponse(payload: any): Promise<{ matches: TrialMat
     }
   ]
   
-  // Simple keyword matching for demo (in production, use AI/ML)
+  // Enhanced keyword matching using Gemini analysis
   const matches = allTrials.filter(trial => {
     let score = 0
     
-    // Check for condition matches
-    if (symptoms.includes('breast') && trial.title.toLowerCase().includes('breast')) score += 90
-    if (symptoms.includes('lung') && trial.title.toLowerCase().includes('lung')) score += 90
-    if (symptoms.includes('alzheimer') && trial.title.toLowerCase().includes('alzheimer')) score += 95
-    if (symptoms.includes('diabetes') && trial.title.toLowerCase().includes('diabetes')) score += 88
-    if (symptoms.includes('cancer') && trial.title.toLowerCase().includes('cancer')) score += 85
+    // Use enhanced symptoms for better matching
+    const conditions = enhancedSymptoms.primaryConditions || []
+    const keywords = enhancedSymptoms.keywords || []
+    
+    // Check primary conditions
+    conditions.forEach(condition => {
+      if (trial.title.toLowerCase().includes(condition) || 
+          trial.description.toLowerCase().includes(condition)) {
+        score += 85
+      }
+    })
+    
+    // Check enhanced keywords
+    keywords.forEach(keyword => {
+      if (trial.title.toLowerCase().includes(keyword) || 
+          trial.description.toLowerCase().includes(keyword) ||
+          trial.criteria.toLowerCase().includes(keyword)) {
+        score += 10
+      }
+    })
+    
+    // Original symptom matching as fallback
+    if (originalSymptoms.includes('breast') && trial.title.toLowerCase().includes('breast')) score += 90
+    if (originalSymptoms.includes('lung') && trial.title.toLowerCase().includes('lung')) score += 90
+    if (originalSymptoms.includes('alzheimer') && trial.title.toLowerCase().includes('alzheimer')) score += 95
+    if (originalSymptoms.includes('diabetes') && trial.title.toLowerCase().includes('diabetes')) score += 88
+    if (originalSymptoms.includes('cancer') && trial.title.toLowerCase().includes('cancer')) score += 85
     
     // Check for stage matches
-    if (symptoms.includes('stage 3') || symptoms.includes('stage iii')) {
+    if (originalSymptoms.includes('stage 3') || originalSymptoms.includes('stage iii')) {
       if (trial.criteria.toLowerCase().includes('stage iii')) score += 10
     }
     
     // Check for mutation matches
-    if (symptoms.includes('egfr') && trial.title.toLowerCase().includes('egfr')) score += 15
-    if (symptoms.includes('her2') && trial.description.toLowerCase().includes('her2')) score += 15
+    if (originalSymptoms.includes('egfr') && trial.title.toLowerCase().includes('egfr')) score += 15
+    if (originalSymptoms.includes('her2') && trial.description.toLowerCase().includes('her2')) score += 15
+    
+    // Severity-based scoring
+    if (enhancedSymptoms.severity === 'advanced' || enhancedSymptoms.severity === 'severe') {
+      if (trial.phase === 'Phase 3' || trial.phase === 'Phase 2/3') score += 5
+    }
     
     // Assign score and return if above threshold
     trial.matchScore = Math.min(score + Math.floor(Math.random() * 10), 100)

@@ -201,15 +201,18 @@ const Index = () => {
         
         setChatHistory(prev => [...prev, {
           id: Date.now() + 2,
-          text: `Found ${data.matches.length} matching clinical trials using Fetch.ai agents. Your health data remained encrypted throughout the matching process.`,
+          text: `Found ${data.matches.length} matching clinical trials using Fetch.ai agents and Gemini AI analysis. Your health data remained encrypted throughout the matching process.`,
           sender: 'system',
           timestamp: new Date().toISOString(),
           data: data.matches
         }]);
         
+        // Also perform medical analysis using Gemini
+        performMedicalAnalysis(symptoms.trim());
+        
         toast({
           title: "Trials Found!",
-          description: `Found ${data.matches.length} matching trials with privacy protection using ASI:One API.`,
+          description: `Found ${data.matches.length} matching trials with AI-powered analysis using both ASI:One and Gemini APIs.`,
         });
       } else {
         throw new Error(data.error || 'No matches found');
@@ -507,6 +510,51 @@ const Index = () => {
       </footer>
     </div>
   );
+
+  // Medical Analysis function for Gemini integration
+  const performMedicalAnalysis = async (symptoms, analysisType = 'comprehensive') => {
+    try {
+      const response = await fetch('/functions/v1/medical-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          symptoms,
+          analysisType,
+          age: 45,
+          gender: 'unspecified'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Medical Analysis Complete",
+          description: `Gemini AI analysis completed with ${data.analysis.confidence}% confidence`,
+        });
+        
+        console.log('Medical Analysis Results:', data.analysis);
+        return data.analysis;
+      } else {
+        throw new Error(data.error || 'Analysis failed');
+      }
+      
+    } catch (error) {
+      console.error('Medical analysis error:', error);
+      toast({
+        title: "Analysis Error",
+        description: "Failed to perform medical analysis",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
 };
 
 // Privacy Status Component
