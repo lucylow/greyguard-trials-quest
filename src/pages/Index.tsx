@@ -9,9 +9,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "@/hooks/use-toast";
 import { 
   Send, 
-  ShieldCheck as VerifiedUser, 
-  Stethoscope as MedicalServices, 
-  MapPin as LocationOn, 
+  ShieldCheck, 
+  Stethoscope, 
+  MapPin, 
   Lock, 
   Shield, 
   Activity,
@@ -328,7 +328,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <MedicalServices className="h-10 w-10" />
+              <Stethoscope className="h-10 w-10" />
               <div>
                 <h1 className="text-2xl font-bold">GreyGuard Trials</h1>
                 <p className="text-sm opacity-90">Decentralized Clinical Trial Matching</p>
@@ -497,7 +497,7 @@ const PrivacyStatus = () => (
     </div>
     <div className="flex items-center space-x-2">
       <Badge variant="secondary" className="bg-success text-success-foreground">
-        <VerifiedUser className="h-3 w-3 mr-1" />
+        <ShieldCheck className="h-3 w-3 mr-1" />
         ZK Proofs
       </Badge>
       <Badge variant="secondary" className="bg-zkp-btc text-white">
@@ -525,7 +525,7 @@ const ChatMessage = ({ message }) => {
         {message.data && (
           <div className="mt-2 pt-2 border-t border-border/50">
             <Badge className="bg-success text-success-foreground">
-              <VerifiedUser className="h-3 w-3 mr-1" />
+              <ShieldCheck className="h-3 w-3 mr-1" />
               Privacy Protected
             </Badge>
           </div>
@@ -545,7 +545,7 @@ const TrialResults = ({ matches, onSelect, selectedTrial }) => {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <MedicalServices className="h-12 w-12 text-muted-foreground mb-4" />
+          <Stethoscope className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-semibold mb-2">Find Clinical Trials Securely</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Describe your symptoms to find matching trials with complete privacy protection.
@@ -556,7 +556,7 @@ const TrialResults = ({ matches, onSelect, selectedTrial }) => {
               Data Encrypted
             </Badge>
             <Badge variant="outline">
-              <VerifiedUser className="h-3 w-3 mr-1" />
+              <ShieldCheck className="h-3 w-3 mr-1" />
               ZK-Proof Matching
             </Badge>
             <Badge variant="outline">
@@ -573,7 +573,7 @@ const TrialResults = ({ matches, onSelect, selectedTrial }) => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <VerifiedUser className="h-5 w-5 text-success" />
+          <ShieldCheck className="h-5 w-5 text-success" />
           <span>{matches.length} Matching Trials Found</span>
         </CardTitle>
         <CardDescription>
@@ -604,11 +604,11 @@ const TrialResults = ({ matches, onSelect, selectedTrial }) => {
                   {trial.status}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  <LocationOn className="h-3 w-3 mr-1" />
+                  <MapPin className="h-3 w-3 mr-1" />
                   {trial.locations[0]}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  <VerifiedUser className="h-3 w-3 mr-1" />
+                  <ShieldCheck className="h-3 w-3 mr-1" />
                   ZK-Verified
                 </Badge>
               </div>
@@ -670,7 +670,7 @@ const TrialDetails = ({ trial, onConsent }) => {
         
         <div className="p-4 bg-muted rounded-lg">
           <h3 className="font-semibold mb-2 flex items-center">
-            <VerifiedUser className="h-4 w-4 mr-2 text-success" />
+            <ShieldCheck className="h-4 w-4 mr-2 text-success" />
             Privacy Verification
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -803,7 +803,7 @@ const ZKPDemo = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <VerifiedUser className="h-5 w-5 text-success" />
+            <ShieldCheck className="h-5 w-5 text-success" />
             <span>ZK-Proof Verifier</span>
             <Badge variant="outline" className="demo-badge">DEMO</Badge>
           </CardTitle>
@@ -824,7 +824,7 @@ const ZKPDemo = ({
               disabled={verifyLoading}
               className="w-full"
             >
-              {verifyLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <VerifiedUser className="h-4 w-4 mr-2" />}
+              {verifyLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
               Verify Proof
             </Button>
           </div>
@@ -886,7 +886,7 @@ const PrivacyFeatures = () => (
         color="zkp-encrypted"
       />
       <PrivacyFeatureCard 
-        icon={<VerifiedUser className="h-8 w-8" />}
+        icon={<ShieldCheck className="h-8 w-8" />}
         title="Zero-Knowledge Proofs"
         description="We verify your eligibility for trials without accessing your raw medical data using advanced cryptographic proofs."
         color="zkp-verified"
