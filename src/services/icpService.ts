@@ -37,7 +37,9 @@ class ICPService {
         locations: ['New York', 'Boston', 'Chicago'],
         ageRange: { min: 18, max: 80 },
         genderEligibility: ['male', 'female'],
-        recruitmentStatus: 'active'
+        recruitmentStatus: 'active',
+        sponsor: 'research-org-001',
+        zkCircuit: 'zk-circuit-nsclc'
       },
       {
         id: 'trial_002',
@@ -47,7 +49,9 @@ class ICPService {
         locations: ['San Francisco', 'Seattle', 'Portland'],
         ageRange: { min: 21, max: 75 },
         genderEligibility: ['male', 'female', 'nonbinary'],
-        recruitmentStatus: 'active'
+        recruitmentStatus: 'active',
+        sponsor: 'diabetes-research-foundation',
+        zkCircuit: 'zk-circuit-diabetes'
       }
     ];
 
@@ -65,7 +69,9 @@ class ICPService {
           gender,
           encryptedData: `encrypted_${sensitiveData}`,
           dataHash: `hash_${sensitiveData.length}`,
-          timestamp: Date.now()
+          consent: 'pending',
+          timestamp: Date.now(),
+          btcAnchor: `btc_${Date.now()}`
         };
         mockPatients.set(id, profile);
         return id;
@@ -88,7 +94,8 @@ class ICPService {
             matches.push({
               trialId: trial.id,
               matchScore: score,
-              eligibilityProof: `ZKProof:${patientId}|${trial.id}|${Date.now()}`
+              eligibilityProof: `ZKProof:${patientId}|${trial.id}|${Date.now()}`,
+              consentRequired: true
             });
           }
         }

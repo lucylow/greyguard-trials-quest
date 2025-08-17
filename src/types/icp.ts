@@ -6,6 +6,7 @@ export type Location = string;
 
 export type AgeGroup = 'child' | 'adult' | 'senior';
 export type Gender = 'male' | 'female' | 'nonbinary' | 'unspecified';
+export type ConsentStatus = 'granted' | 'revoked' | 'pending';
 
 export interface PatientProfile {
   id: PatientID;
@@ -15,7 +16,9 @@ export interface PatientProfile {
   gender: Gender;
   encryptedData: string;
   dataHash: string;
+  consent: ConsentStatus;
   timestamp: number;
+  btcAnchor?: string;
 }
 
 export interface ClinicalTrial {
@@ -27,12 +30,15 @@ export interface ClinicalTrial {
   ageRange: { min: number; max: number };
   genderEligibility: Gender[];
   recruitmentStatus: 'active' | 'paused' | 'completed';
+  sponsor: string;
+  zkCircuit: string;
 }
 
 export interface MatchResult {
   trialId: TrialID;
   matchScore: number;
   eligibilityProof: string;
+  consentRequired: boolean;
 }
 
 export interface ICPCanisterActor {
