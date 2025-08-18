@@ -1,7 +1,5 @@
 **GreyGuard Trials: No More Grey Areas in Clinical Matching**
 
-[![License: MIT]([https://img.shields.io/badge/license-MIT-blue.svg](https://img.shields.io/badge/license-MIT-blue.svg) Status\]([https://img.shields.io/badge/build-passing-bright://img.shields.io/badge/coverage](https://img.shields.io/badge/build-passing-bright://img.shields.io/badge/coverage) 
-
 Table of Contents
 
 *   [Project Overview](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#project-overview)
