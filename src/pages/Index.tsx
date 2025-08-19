@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import AgentIntegration from '../components/AgentIntegration';
 import PromptManager from '../components/PromptManager';
+import ASIProtocol from '../components/ASIProtocol';
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -380,11 +381,12 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="chat">Trial Matching</TabsTrigger>
             <TabsTrigger value="details" disabled={!selectedTrial}>Trial Details</TabsTrigger>
             <TabsTrigger value="agent">AI Agent</TabsTrigger>
             <TabsTrigger value="prompts">Prompts</TabsTrigger>
+            <TabsTrigger value="asi">ASI Protocol</TabsTrigger>
             <TabsTrigger value="zkp">ZKP Demo</TabsTrigger>
             <TabsTrigger value="privacy">Privacy Features</TabsTrigger>
           </TabsList>
@@ -483,6 +485,11 @@ const Index = () => {
           {/* Prompts Tab */}
           <TabsContent value="prompts">
             <PromptManager />
+          </TabsContent>
+
+          {/* ASI Protocol Tab */}
+          <TabsContent value="asi">
+            <ASIProtocol />
           </TabsContent>
 
           {/* ZKP Demo Tab */}
