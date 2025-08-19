@@ -21,6 +21,7 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react';
+import AgentIntegration from '../components/AgentIntegration';
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -378,9 +379,10 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="chat">Trial Matching</TabsTrigger>
             <TabsTrigger value="details" disabled={!selectedTrial}>Trial Details</TabsTrigger>
+            <TabsTrigger value="agent">AI Agent</TabsTrigger>
             <TabsTrigger value="zkp">ZKP Demo</TabsTrigger>
             <TabsTrigger value="privacy">Privacy Features</TabsTrigger>
           </TabsList>
@@ -490,6 +492,11 @@ const Index = () => {
               generateZKProof={generateZKProof}
               verifyZKProof={verifyZKProof}
             />
+          </TabsContent>
+
+          {/* AI Agent Tab */}
+          <TabsContent value="agent">
+            <AgentIntegration />
           </TabsContent>
 
           {/* Privacy Features Tab */}
