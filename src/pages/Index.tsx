@@ -27,6 +27,11 @@ import ASIProtocol from '../components/ASIProtocol';
 import ImageAgents from '../components/ImageAgents';
 import MCPSystem from '../components/MCPSystem';
 import { VoiceDemo } from '../components/VoiceDemo';
+import { HomePage } from '../components/HomePage';
+import { ClinicalTrialsPage } from '../components/ClinicalTrialsPage';
+import { AgentPlatformPage } from '../components/AgentPlatformPage';
+import { DecentralizedFeaturesPage } from '../components/DecentralizedFeaturesPage';
+import { ResourcesPage } from '../components/ResourcesPage';
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -53,7 +58,7 @@ const Index = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedTrial, setSelectedTrial] = useState(null);
-  const [activeTab, setActiveTab] = useState('chat');
+  const [activeTab, setActiveTab] = useState('home');
   const [chatHistory, setChatHistory] = useState([]);
   
   // ZKP Demo state
@@ -384,138 +389,44 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-10">
-            <TabsTrigger value="chat">Trial Matching</TabsTrigger>
-            <TabsTrigger value="details" disabled={!selectedTrial}>Trial Details</TabsTrigger>
-            <TabsTrigger value="agent">AI Agent</TabsTrigger>
-            <TabsTrigger value="prompts">Prompts</TabsTrigger>
-            <TabsTrigger value="asi">ASI Protocol</TabsTrigger>
-            <TabsTrigger value="images">Image AI</TabsTrigger>
-            <TabsTrigger value="mcp">MCP System</TabsTrigger>
-            <TabsTrigger value="voice">Voice AI</TabsTrigger>
-            <TabsTrigger value="zkp">ZKP Demo</TabsTrigger>
-            <TabsTrigger value="privacy">Privacy Features</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="home">Home</TabsTrigger>
+            <TabsTrigger value="clinical-trials">Clinical Trials</TabsTrigger>
+            <TabsTrigger value="agent-platform">Agent Platform</TabsTrigger>
+            <TabsTrigger value="decentralized">Decentralized Features</TabsTrigger>
+            <TabsTrigger value="resources">Resources</TabsTrigger>
           </TabsList>
 
-          {/* Trial Matching Tab */}
-          <TabsContent value="chat" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Chat Interface */}
-              <div className="lg:col-span-2">
-                <Card className="h-[500px] flex flex-col">
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Activity className="h-5 w-5 text-primary" />
-                      <span>Clinical Trial Assistant</span>
-                    </CardTitle>
-                    <CardDescription>
-                      Describe your symptoms to find matching trials with privacy protection
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="flex-1 flex flex-col">
-                    {/* Chat Messages */}
-                    <div 
-                      ref={chatContainerRef}
-                      className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-muted/30 rounded-lg"
-                    >
-                      {chatHistory.map((msg) => (
-                        <ChatMessage key={msg.id} message={msg} />
-                      ))}
-                      {loading && (
-                        <div className="flex items-center justify-center space-x-2 py-4">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span className="text-sm text-muted-foreground">
-                            Matching trials with privacy protection...
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Input Form */}
-                    <form onSubmit={handleSubmit} className="space-y-3">
-                      <div className="flex space-x-2">
-                        <Input
-                          placeholder="Describe symptoms (e.g., Stage 3 breast cancer)"
-                          value={symptoms}
-                          onChange={(e) => setSymptoms(e.target.value)}
-                          className="flex-1"
-                        />
-                        <Input
-                          placeholder="Location"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          className="w-32"
-                        />
-                      </div>
-                      <Button 
-                        type="submit" 
-                        disabled={loading || !symptoms.trim()}
-                        className="w-full"
-                      >
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
-                        Find Trials
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              {/* Results Panel */}
-              <div>
-                <TrialResults 
-                  matches={matches} 
-                  onSelect={handleTrialSelect} 
-                  selectedTrial={selectedTrial}
-                />
-              </div>
-            </div>
+          {/* Home Tab */}
+          <TabsContent value="home" className="space-y-6">
+            <HomePage />
           </TabsContent>
 
-          {/* Trial Details Tab */}
-          <TabsContent value="details">
-            {selectedTrial ? (
-              <TrialDetails trial={selectedTrial} onConsent={handleConsent} />
-            ) : (
-              <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Select a trial to view details</p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          {/* Clinical Trials Tab */}
+          <TabsContent value="clinical-trials" className="space-y-6">
+            <ClinicalTrialsPage 
+              symptoms={symptoms}
+              setSymptoms={setSymptoms}
+              location={location}
+              setLocation={setLocation}
+              matches={matches}
+              selectedTrial={selectedTrial}
+              onTrialSelect={handleTrialSelect}
+              onSubmit={handleSubmit}
+              loading={loading}
+              chatHistory={chatHistory}
+              chatContainerRef={chatContainerRef}
+            />
           </TabsContent>
 
-          {/* Prompts Tab */}
-          <TabsContent value="prompts">
-            <PromptManager />
+          {/* Agent Platform Tab */}
+          <TabsContent value="agent-platform" className="space-y-6">
+            <AgentPlatformPage />
           </TabsContent>
 
-          {/* ASI Protocol Tab */}
-          <TabsContent value="asi">
-            <ASIProtocol />
-          </TabsContent>
-
-          {/* Image AI Tab */}
-          <TabsContent value="images">
-            <ImageAgents />
-          </TabsContent>
-
-          {/* MCP System Tab */}
-          <TabsContent value="mcp">
-            <MCPSystem />
-          </TabsContent>
-
-          {/* Voice AI Tab */}
-          <TabsContent value="voice">
-            <VoiceDemo />
-          </TabsContent>
-
-          {/* ZKP Demo Tab */}
-          <TabsContent value="zkp">
-            <ZKPDemo 
+          {/* Decentralized Features Tab */}
+          <TabsContent value="decentralized" className="space-y-6">
+            <DecentralizedFeaturesPage 
               zkpForm={zkpForm}
               setZkpForm={setZkpForm}
               generatedProof={generatedProof}
@@ -529,14 +440,9 @@ const Index = () => {
             />
           </TabsContent>
 
-          {/* AI Agent Tab */}
-          <TabsContent value="agent">
-            <AgentIntegration />
-          </TabsContent>
-
-          {/* Privacy Features Tab */}
-          <TabsContent value="privacy">
-            <PrivacyFeatures />
+          {/* Resources Tab */}
+          <TabsContent value="resources" className="space-y-6">
+            <ResourcesPage />
           </TabsContent>
         </Tabs>
       </div>
