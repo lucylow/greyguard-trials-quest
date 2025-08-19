@@ -41,8 +41,8 @@ export interface GenerationHistory {
 
 export class ImageGenerationAgent {
   private static instance: ImageGenerationAgent;
-  private readonly API_BASE_URL = process.env.REACT_APP_OPENAI_API_URL || 'https://api.openai.com/v1';
-  private readonly API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+  private readonly API_BASE_URL = import.meta.env.VITE_OPENAI_API_URL || 'https://api.openai.com/v1';
+  private readonly API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
   private readonly AGENT_NAME = 'GreyGuard_Image_Generator';
   private readonly ASI_VERSION = '0.1';
   

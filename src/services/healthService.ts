@@ -115,7 +115,7 @@ export class HealthService {
       status: overallStatus,
       timestamp: new Date().toISOString(),
       uptime: Date.now() - this.startTime,
-      version: process.env.npm_package_version || '1.0.0',
+      version: import.meta.env.VITE_APP_VERSION || '1.0.0',
       components: Object.fromEntries(this.componentHealth),
       checks
     };
@@ -329,9 +329,9 @@ export class HealthService {
     
     try {
       // Check if required API keys are configured
-      const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
-      const anthropicKey = process.env.REACT_APP_ANTHROPIC_API_KEY;
-      const agentverseKey = process.env.REACT_APP_AGENTVERSE_API_KEY;
+      const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      const anthropicKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+      const agentverseKey = import.meta.env.VITE_AGENTVERSE_API_KEY;
       
       const responseTime = Date.now() - startTime;
       const hasKeys = openaiKey && anthropicKey && agentverseKey;

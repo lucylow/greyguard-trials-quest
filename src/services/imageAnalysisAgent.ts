@@ -54,8 +54,8 @@ export interface AnalysisCapabilities {
 
 export class ImageAnalysisAgent {
   private static instance: ImageAnalysisAgent;
-  private readonly API_BASE_URL = process.env.REACT_APP_ANTHROPIC_API_URL || 'https://api.anthropic.com/v1';
-  private readonly API_KEY = process.env.REACT_APP_ANTHROPIC_API_KEY;
+  private readonly API_BASE_URL = import.meta.env.VITE_ANTHROPIC_API_URL || 'https://api.anthropic.com/v1';
+  private readonly API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
   private readonly AGENT_NAME = 'GreyGuard_Image_Analyzer';
   private readonly ASI_VERSION = '0.1';
   private readonly DEFAULT_MODEL = 'claude-3-5-sonnet-20240620';

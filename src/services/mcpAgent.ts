@@ -84,7 +84,7 @@ export class MCPAgent {
       name: 'GreyGuard_MCP_Agent',
       version: '1.2.0',
       description: 'MCP Agent providing weather data and other services through ASI protocol',
-      mcpServerUrl: process.env.REACT_APP_MCP_SERVER_URL || 'http://localhost:8000',
+              mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8000',
       asiVersion: '0.1',
       rateLimit: 100,
       timeout: 30000,

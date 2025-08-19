@@ -26,6 +26,7 @@ import PromptManager from '../components/PromptManager';
 import ASIProtocol from '../components/ASIProtocol';
 import ImageAgents from '../components/ImageAgents';
 import MCPSystem from '../components/MCPSystem';
+import { VoiceDemo } from '../components/VoiceDemo';
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -353,7 +354,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gradient-medical text-white shadow-medical">
+      <header className="bg-blue-900 text-white shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -383,7 +384,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="chat">Trial Matching</TabsTrigger>
             <TabsTrigger value="details" disabled={!selectedTrial}>Trial Details</TabsTrigger>
             <TabsTrigger value="agent">AI Agent</TabsTrigger>
@@ -391,6 +392,7 @@ const Index = () => {
             <TabsTrigger value="asi">ASI Protocol</TabsTrigger>
             <TabsTrigger value="images">Image AI</TabsTrigger>
             <TabsTrigger value="mcp">MCP System</TabsTrigger>
+            <TabsTrigger value="voice">Voice AI</TabsTrigger>
             <TabsTrigger value="zkp">ZKP Demo</TabsTrigger>
             <TabsTrigger value="privacy">Privacy Features</TabsTrigger>
           </TabsList>
@@ -504,6 +506,11 @@ const Index = () => {
           {/* MCP System Tab */}
           <TabsContent value="mcp">
             <MCPSystem />
+          </TabsContent>
+
+          {/* Voice AI Tab */}
+          <TabsContent value="voice">
+            <VoiceDemo />
           </TabsContent>
 
           {/* ZKP Demo Tab */}

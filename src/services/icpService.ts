@@ -10,8 +10,8 @@ import {
 } from '../types/icp';
 
 // ICP Configuration
-const CANISTER_ID = process.env.REACT_APP_CANISTER_ID || 'rdmx6-jaaaa-aaaah-qdrva-cai';
-const HOST = process.env.NODE_ENV === 'production' ? 'https://ic0.app' : 'http://localhost:8000';
+const CANISTER_ID = import.meta.env.VITE_CANISTER_ID || 'rdmx6-jaaaa-aaaah-qdrva-cai';
+const HOST = import.meta.env.MODE === 'production' ? 'https://ic0.app' : 'http://localhost:8000';
 
 class ICPService {
   private actor: ICPCanisterActor | null = null;
