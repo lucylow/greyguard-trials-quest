@@ -1,256 +1,374 @@
-**GreyGuard Trials: No More Grey Areas in Clinical Matching**
+# Clinical Trial Matching System
 
-Table of Contents
+A decentralized clinical trial matching system using Fetch.ai's uAgents and the Internet Computer Protocol (ICP). The system enables privacy-preserving matching of patients with clinical trials while maintaining data security and patient control.
 
-*   [Project Overview](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#project-overview)
-    
-*   [Problem Statement & Motivation](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#problem-statement--motivation)
-    
-*   [Key Features & Solution Description](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#key-features--solution-description)
-    
-*   [Architecture & Technology Stack](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#architecture--technology-stack)
-    
-*   [Demo](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#demo)
-    
-*   [Installation & Deployment](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#installation--deployment)
-    
-*   [Usage](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#usage)
-    
-*   [Business Model & Monetization](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#business-model--monetization)
-    
-*   [Roadmap](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#roadmap)
-    
-*   [Team](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#team)
-    
-*   [Contributing](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#contributing)
-    
-*   [License](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#license)
-    
-*   [Contact](https://www.perplexity.ai/search/i-need-you-to-write-an-extreme-fXEh.kcPTDSbtFoylsn3MQ#contact)
-    
+## 🏗️ System Architecture
 
-**Project Overview**
---------------------
+![System Architecture](https://via.placeholder.com/800x400.png?text=Architecture+Diagram)
 
-**GreyGuard Trials** is a next-generation decentralized clinical trial matching platform designed to eliminate data silos and biases from patient recruitment. By leveraging AI-powered autonomous agents running on the Fetch.ai Agentverse combined with an ICP blockchain backend, it securely matches patients with clinical trials based on transparent, privacy-preserving criteria.
+### Core Components
 
-Our mission is to ensure **no more grey areas in clinical matching** — providing more equitable, efficient, and trustworthy clinical trial recruitment for patients, researchers, and sponsors worldwide.
+- **uAgents (Fetch.ai)**: Patient, Trial, and Matching agents with ASI protocol support
+- **Internet Computer Protocol (ICP)**: Canister smart contracts for data storage and matching logic
+- **Frontend**: React-based patient portal and research organization dashboard
+- **MCP System**: Model Context Protocol server for tool integration
+- **Image AI**: DALL-E 3 image generation and Claude 3.5 image analysis
+- **Monitoring**: Prometheus metrics and Grafana dashboards
 
-**Problem Statement & Motivation**
-----------------------------------
+## 🚀 Quick Start
 
-Clinical trials are crucial for advancing medical science, but recruitment problems stall innovation:
+### Prerequisites
 
-*   Nearly 80% of clinical trials miss enrollment deadlines, and up to a third fail entirely.
-    
-*   Existing centralized models create opaque, biased, and inefficient matchings.
-    
-*   Patients lose control over their sensitive health data and fear privacy breaches.
-    
-*   Underrepresented populations face systemic exclusion due to poor outreach and lack of access.
-    
+- Docker and Docker Compose
+- Node.js 18+ and npm
+- Python 3.11+
+- DFX SDK (for ICP development)
 
-**GreyGuard Trials** addresses these critical pain points by enabling decentralized, transparent, and AI-powered clinical trial matching that puts **patients in control** and bridges healthcare equity gaps globally.
+### 1. Clone and Setup
 
-**Key Features & Solution Description**
----------------------------------------
+```bash
+git clone <repository-url>
+cd greyguard-trials-quest
 
-*   **Decentralized Data Ownership:** Secure patient data pods stored on IPFS and ICP, enabling patients full control with zero-knowledge proofs to authorize sharing.
-    
-*   **AI-Driven Trial Matching:** NLP-powered agents analyze trial eligibility criteria and patients' medical metadata to find precise matches without revealing sensitive raw data.
-    
-*   **Multi-Agent Collaboration:** Separate agents represent patients, sponsors, and investigators — negotiating recruitment in a real-time, trustless environment on Agentverse.
-    
-*   **Smart Contract Eligibility Checks:** Transparency guaranteed through ICP canisters verifying trial criteria according to predefined rules.
-    
-*   **Privacy & Compliance:** Built-in HIPAA and GDPR adherence, anonymization, and consent management ensure ethical data usage.
-    
-*   **Interoperability:** Integrates APIs from major trial registries (ClinicalTrials.gov, EU Clinical Trials Register, WHO ICTRP) and EMR providers.
-    
+# Copy environment template
+cp env.example .env
 
-**Architecture & Technology Stack**
------------------------------------
+# Edit .env with your API keys
+nano .env
+```
 
-*   **Frontend:** ReactJS patient and sponsor dashboard with real-time notifications and match tracking.
-    
-*   **Agent Layer:** Autonomous matching agents deployed on the Fetch.ai Agentverse, leveraging GPT-4o-turbo fine-tuned for medical NLP tasks.
-    
-*   **Backend:** Internet Computer Protocol (ICP) smart contracts managing trial eligibility and consent verification.
-    
-*   **Storage:** Encrypted personal data pods on IPFS for decentralized patient data storage.
-    
-*   **Security:** DID (decentralized identifiers) combined with zk-SNARKs for proof of consent without data exposure.
-    
-*   **APIs:** RESTful interfaces for clinical trial data integration and white-label partner solutions.
-    
+### 2. Deploy Locally
 
-**Demo**
---------
+```bash
+# Run the deployment script
+./deploy_local.sh
 
-_(Screenshots/GIFs/Videos showing the user journey, matching process, agent negotiations, etc. Placeholder for future upload)_
+# Or manually:
+npm install
+npm run build
+docker-compose up -d
+```
 
-**Installation & Deployment**
------------------------------
+### 3. Access the System
 
-**Prerequisites**
------------------
+- **Frontend**: http://localhost:3000
+- **DFX Local**: http://localhost:8000
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001 (admin/admin)
 
-*   NodeJS (v16+)
-    
-*   npm or yarn
-    
-*   DFX (Dfinity SDK) for ICP development
-    
-*   Fetch.ai Agentverse CLI and SDK
-    
-*   IPFS node or gateway access
-    
+## 🔧 Configuration
 
-**Setup Instructions**
-----------------------
+### Environment Variables
 
-1.  Clone the repository: bash
-    
+Create a `.env` file with the following variables:
 
-git clone https://github.com/yourusername/greyguard-trials.git
+```bash
+# API Keys
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+AGENTVERSE_API_KEY=your_agentverse_api_key_here
 
-cd greyguard-trials
+# ICP Configuration
+DFX_NETWORK=local
+DFX_HOST=127.0.0.1:8000
 
-2.  Install dependencies: bash
-    
+# Database
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=clinical_trials
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=secure_password_123
 
-npm install  
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
 
-or  
+### API Keys Required
 
-yarn install
+- **OpenAI**: For DALL-E 3 image generation and GPT-4 prompt optimization
+- **Anthropic**: For Claude 3.5 image analysis
+- **Agentverse**: For uAgent deployment and management
 
-2.  Deploy ICP canisters: bash
-    
+## 🏥 Features
 
-dfx start --background  
+### Patient Management
+- Secure profile creation with encrypted health data
+- Zero-knowledge proof generation for privacy
+- Bitcoin blockchain anchoring for audit trails
+- Consent management with granular permissions
 
+### Clinical Trial Matching
+- Privacy-preserving matching algorithms
+- ASI protocol integration for agent communication
+- Multi-criteria matching (symptoms, location, age, gender)
+- Real-time eligibility verification
+
+### AI Integration
+- Natural language processing for patient queries
+- Image generation for medical visualization
+- Image analysis for medical imaging
+- Dynamic task routing to specialized agents
+
+### Security & Privacy
+- AES-256 encryption for sensitive data
+- Merkle tree certification for data integrity
+- Principal-based authentication on ICP
+- Automatic key rotation and audit logging
+
+## 🐳 Docker Services
+
+The system runs the following services:
+
+| Service | Port | Description |
+|---------|------|-------------|
+| Frontend | 3000 | React application |
+| DFX Local | 8000 | ICP local network |
+| Patient Agent | 8002 | Patient management uAgent |
+| Trial Agent | 8003 | Trial management uAgent |
+| Matching Agent | 8004 | Matching engine uAgent |
+| MCP Server | 8005 | Model Context Protocol server |
+| Redis | 6379 | Message broker and caching |
+| PostgreSQL | 5432 | Additional data storage |
+| Prometheus | 9090 | Metrics collection |
+| Grafana | 3001 | Monitoring dashboard |
+
+## 📊 Monitoring
+
+### Metrics Available
+
+- Agent request counts and durations
+- Error rates by type
+- Active connections
+- Health check status
+- Performance metrics
+
+### Accessing Metrics
+
+```bash
+# View all metrics
+curl http://localhost:9090/metrics
+
+# Access Grafana dashboard
+open http://localhost:3001
+# Username: admin, Password: admin
+```
+
+## 🔌 API Endpoints
+
+### Patient Agent
+
+- `POST /profile` - Create/update patient profile
+- `POST /matching` - Request clinical trial matching
+- `POST /consent` - Grant/revoke consent
+- `GET /matches` - Get matching history
+
+### Trial Agent
+
+- `POST /trial` - Register new clinical trial
+- `GET /trials` - List available trials
+- `PUT /trial/:id` - Update trial information
+- `DELETE /trial/:id` - Remove trial
+
+### Matching Engine
+
+- `POST /match` - Process matching request
+- `GET /eligibility/:patient_id/:trial_id` - Check eligibility
+- `POST /consent-request` - Request patient consent
+
+## 🧪 Development
+
+### Running Agents Locally
+
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start individual agents
+cd agents
+python -m uagents.run patient_agent
+python -m uagents.run trial_agent
+python -m uagents.run matching_agent
+```
+
+### Frontend Development
+
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### ICP Canister Development
+
+```bash
+# Start local network
+dfx start --background
+
+# Deploy canisters
 dfx deploy
 
-2.  Run the front-end application: bash
-    
+# View canister status
+dfx canister status clinical_trial_matcher
+```
 
-npm run start
+## 🚀 Deployment
 
-2.  Launch Agentverse agents according to instructions in /agents directory.
-    
+### Local Development
 
-**Usage**
----------
+```bash
+./deploy_local.sh
+```
 
-**Patient Portal**
-------------------
+### Production Deployment
 
-*   Register and create encrypted health metadata pods.
-    
-*   Browse available clinical trials matching your profile anonymously.
-    
-*   Receive AI agent notifications for new matches and trial updates.
-    
-*   Grant/revoke consent for data sharing at any time.
-    
+```bash
+# Build production images
+docker-compose -f docker-compose.prod.yml build
 
-**Sponsor Portal**
-------------------
+# Deploy to production
+docker-compose -f docker-compose.prod.yml up -d
+```
 
-*   List clinical trials using standardized eligibility criteria.
-    
-*   Track recruitment performance with analytics dashboards.
-    
-*   Negotiate recruitment terms with patient agents.
-    
+### Agentverse Deployment
 
-**Business Model & Monetization**
----------------------------------
+```bash
+# Deploy to Agentverse
+agentverse deploy patient_agent
+agentverse deploy trial_agent
+agentverse deploy matching_agent
+```
 
-*   **Subscription Model:** Clinical research organizations and sponsors subscribe to access the matching platform and trial analytics.
-    
-*   **Transaction Fees:** Success-based per match/contact fees to sponsors.
-    
-*   **Patient Premium Services:** Optional paid features such as second-opinion reports and personalized trial recommendations.
-    
-*   **API Licensing:** White-label APIs offered to hospital networks and EMR system providers.
-    
+## 🧪 Testing
 
-**Roadmap**
------------
+### Run Tests
 
-**Phase**
+```bash
+# Frontend tests
+npm test
 
-**Timeline**
+# Python tests
+pytest tests/
 
-**Goals & Milestones**
+# Integration tests
+npm run test:integration
+```
 
-Phase 1
+### Test Coverage
 
-0-6 months
+```bash
+# Frontend coverage
+npm run test:coverage
 
-MVP development; pilot partnerships with advocacy groups
+# Python coverage
+pytest --cov=agents tests/
+```
 
-Phase 2
+## 📚 Documentation
 
-6-12 months
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [API Reference](docs/API.md)
+- [Deployment Guide](docs/DEPLOYMENT.md)
+- [Security Guide](docs/SECURITY.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
 
-Integration with multiple trial registries and multilingual capabilities
+## 🤝 Contributing
 
-Phase 3
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-12-18 months
+### Development Setup
 
-Launch B2B subscription; initiate DAO governance
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-Phase 4
+### Code Standards
 
-18-36 months
+- TypeScript for frontend
+- Python 3.11+ for agents
+- Motoko for ICP canisters
+- Follow existing code style
+- Add comprehensive tests
 
-Expansion to global trial networks; personalized medicine features
+## 📄 License
 
-**Team**
---------
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-*   **Lead AI Engineer:** NLP & medical AI specialist responsible for the matching engine.
-    
-*   **Blockchain Developer:** ICP smart contracts and data security architect.
-    
-*   **Clinical Advisor:** Physician experienced in clinical trials and recruitment logistics.
-    
-*   **UX Lead:** Designer focused on accessible and trust-building healthcare interfaces.
-    
+## 🆘 Support
 
-**Contributing**
-----------------
+### Getting Help
 
-Contributions are welcome! Please follow the guidelines:
+- [Issues](https://github.com/your-org/clinical-trial-matching/issues)
+- [Discussions](https://github.com/your-org/clinical-trial-matching/discussions)
+- [Documentation](docs/)
 
-*   Fork the repo and create feature branches.
-    
-*   Submit pull requests with clear descriptions.
-    
-*   Report issues via GitHub Issues.
-    
-*   Respect code style and test coverage standards.
-    
+### Common Issues
 
-**License**
------------
+#### Services Not Starting
 
-This project is licensed under the MIT License. See the [LICENSE](https://www.perplexity.ai/search/LICENSE) file for details.
+```bash
+# Check service status
+docker-compose ps
 
-**Contact**
------------
+# View logs
+docker-compose logs [service_name]
 
-For questions, collaboration, or demo requests, please contact:
+# Restart services
+docker-compose restart
+```
 
-*   Email: your.email@example.com
-    
-*   Twitter: [@GreyGuardTrials](https://twitter.com/GreyGuardTrials)
-    
-*   Website: [https://greyguardtrials.example.com](https://greyguardtrials.example.com/)
-    
+#### API Key Issues
 
-Thank you for your interest in **GreyGuard Trials** — together, let's clear the grey areas in clinical trial recruitment!
+```bash
+# Verify environment variables
+cat .env
+
+# Check if keys are loaded
+docker-compose exec frontend env | grep API_KEY
+```
+
+#### Port Conflicts
+
+```bash
+# Check port usage
+lsof -i :3000
+lsof -i :8000
+
+# Stop conflicting services
+sudo lsof -ti:3000 | xargs kill -9
+```
+
+## 🔮 Roadmap
+
+### Phase 1 (Current)
+- ✅ Basic patient and trial management
+- ✅ ASI protocol integration
+- ✅ Image AI capabilities
+- ✅ MCP server implementation
+
+### Phase 2 (Next)
+- 🔄 Advanced ZK proof generation
+- 🔄 Multi-chain integration
+- 🔄 Machine learning matching
+- 🔄 Mobile application
+
+### Phase 3 (Future)
+- 📋 Regulatory compliance tools
+- 📋 Advanced analytics dashboard
+- 📋 International trial support
+- 📋 AI-powered trial design
+
+---
+
+**Note**: This system maintains a 100% patient opt-in model where:
+1. Patients control all personal health data
+2. No data is shared without explicit consent
+3. Matching occurs through privacy-preserving computations
+4. All operations are auditable via blockchain records
