@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { 
   MessageSquare, 
   Play, 
-  Stop, 
+  CircleStop, 
   RefreshCw, 
   Settings, 
   Activity,
@@ -457,7 +457,7 @@ const ASIProtocol: React.FC<ASIProtocolProps> = ({ className }) => {
                           variant="outline"
                           className="w-full"
                         >
-                          <Stop className="h-4 w-4 mr-2" />
+                          <CircleStop className="h-4 w-4 mr-2" />
                           End Session
                         </Button>
                       </div>
