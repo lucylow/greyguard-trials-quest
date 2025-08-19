@@ -24,6 +24,7 @@ import {
 import AgentIntegration from '../components/AgentIntegration';
 import PromptManager from '../components/PromptManager';
 import ASIProtocol from '../components/ASIProtocol';
+import ImageAgents from '../components/ImageAgents';
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -381,12 +382,13 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="chat">Trial Matching</TabsTrigger>
             <TabsTrigger value="details" disabled={!selectedTrial}>Trial Details</TabsTrigger>
             <TabsTrigger value="agent">AI Agent</TabsTrigger>
             <TabsTrigger value="prompts">Prompts</TabsTrigger>
             <TabsTrigger value="asi">ASI Protocol</TabsTrigger>
+            <TabsTrigger value="images">Image AI</TabsTrigger>
             <TabsTrigger value="zkp">ZKP Demo</TabsTrigger>
             <TabsTrigger value="privacy">Privacy Features</TabsTrigger>
           </TabsList>
@@ -490,6 +492,11 @@ const Index = () => {
           {/* ASI Protocol Tab */}
           <TabsContent value="asi">
             <ASIProtocol />
+          </TabsContent>
+
+          {/* Image AI Tab */}
+          <TabsContent value="images">
+            <ImageAgents />
           </TabsContent>
 
           {/* ZKP Demo Tab */}
