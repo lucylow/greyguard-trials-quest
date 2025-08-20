@@ -322,40 +322,21 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
 
                   {/* Input Form */}
                   <form onSubmit={handleChatSubmit} className="space-y-3">
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Input
-                        placeholder="Describe symptoms (e.g., Stage 3 breast cancer)"
-                        value={symptoms}
-                        onChange={(e) => setSymptoms(e.target.value)}
-                        className="flex-1"
-                      />
-                      <Input
-                        placeholder="Location (e.g., New York, NY)"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="w-full sm:w-32"
-                      />
-                    </div>
-
                     {/* Enhanced Chat Input Area - Using Reusable Component */}
                     <ChatInput
                       placeholder="Ask anything to ASI:One or use @handle to reach an agent directly"
+                      onSubmit={(message) => {
+                        setSymptoms(message);
+                        handleChatSubmit(new Event('submit') as any);
+                      }}
                       onFileAttach={() => toast({ title: "File attachment", description: "File attachment feature coming soon!" })}
                       onWebSearch={() => toast({ title: "Web search", description: "Web search mode activated" })}
                       onAgentSearch={() => toast({ title: "Agent search", description: "Agent search mode activated" })}
                       onFilter={() => toast({ title: "Filter", description: "Filter and settings opened" })}
                       onVoiceToggle={() => toast({ title: "Voice input", description: "Voice input feature coming soon!" })}
                       modelName="ASI1-mini"
+                      showSendButton={false}
                     />
-
-                    <Button
-                      type="submit"
-                      disabled={isProcessing || !symptoms.trim()}
-                      className="w-full"
-                    >
-                      {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
-                      Find Trials
-                    </Button>
                   </form>
                 </CardContent>
               </Card>

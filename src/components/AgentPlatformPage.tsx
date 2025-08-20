@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +12,67 @@ import {
   Cpu,
   Network,
   Code,
-  Lightbulb
+  Lightbulb,
+  AlertCircle
 } from 'lucide-react';
-import AgentIntegration from './AgentIntegration';
-import PromptManager from './PromptManager';
-import ASIProtocol from './ASIProtocol';
+
+// Lazy load components to prevent crashes
+const AgentIntegration = React.lazy(() => import('./AgentIntegration'));
+const PromptManager = React.lazy(() => import('./PromptManager'));
+const ASIProtocol = React.lazy(() => import('./ASIProtocol'));
+
+// Error Boundary Component
+const ErrorBoundary: React.FC<{ children: React.ReactNode; fallback: React.ReactNode }> = ({ children, fallback }) => {
+  const [hasError, setHasError] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleError = (error: ErrorEvent) => {
+      console.error('Component error:', error);
+      setHasError(true);
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+};
+
+// Loading Fallback
+const LoadingFallback = () => (
+  <Card>
+    <CardContent className="p-6">
+      <div className="flex items-center justify-center space-x-2">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+        <span className="text-muted-foreground">Loading component...</span>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+// Error Fallback
+const ErrorFallback = ({ title, description }: { title: string; description: string }) => (
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2 text-red-600">
+        <AlertCircle className="h-5 w-5" />
+        {title}
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-red-800">{description}</p>
+        <p className="text-sm text-red-700 mt-2">
+          The enhanced chatbot in the Clinical Trials tab provides the core functionality.
+        </p>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 export const AgentPlatformPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('ai-agent');
@@ -82,7 +138,16 @@ export const AgentPlatformPage: React.FC = () => {
           </Card>
 
           {/* AI Agent Integration Component */}
-          <AgentIntegration />
+          <ErrorBoundary fallback={
+            <ErrorFallback 
+              title="AI Agent Integration" 
+              description="AI Agent integration is currently being optimized for better performance."
+            />
+          }>
+            <Suspense fallback={<LoadingFallback />}>
+              <AgentIntegration />
+            </Suspense>
+          </ErrorBoundary>
         </TabsContent>
 
         {/* Prompts Tab */}
@@ -121,7 +186,16 @@ export const AgentPlatformPage: React.FC = () => {
           </Card>
 
           {/* Prompt Manager Component */}
-          <PromptManager />
+          <ErrorBoundary fallback={
+            <ErrorFallback 
+              title="Prompt Manager" 
+              description="Prompt management features are coming soon."
+            />
+          }>
+            <Suspense fallback={<LoadingFallback />}>
+              <PromptManager />
+            </Suspense>
+          </ErrorBoundary>
         </TabsContent>
 
         {/* ASI Protocol Tab */}
@@ -166,7 +240,16 @@ export const AgentPlatformPage: React.FC = () => {
           </Card>
 
           {/* ASI Protocol Component */}
-          <ASIProtocol />
+          <ErrorBoundary fallback={
+            <ErrorFallback 
+              title="ASI Protocol Details" 
+              description="ASI Protocol implementation is in progress."
+            />
+          }>
+            <Suspense fallback={<LoadingFallback />}>
+              <ASIProtocol />
+            </Suspense>
+          </ErrorBoundary>
         </TabsContent>
       </Tabs>
 

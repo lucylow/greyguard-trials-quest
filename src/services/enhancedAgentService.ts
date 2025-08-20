@@ -187,7 +187,7 @@ export class EnhancedAgentService {
 
   public async endSession(sessionId: string, reason?: string): Promise<AgentResponse> {
     try {
-      const success = this.endSession(sessionId);
+      const success = this._endSessionInternal(sessionId);
       if (success) {
         return {
           success: true,
