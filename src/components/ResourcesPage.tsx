@@ -51,7 +51,7 @@ export const ResourcesPage: React.FC = () => {
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Brain className="h-4 w-4 text-blue-600" />
+                      <Brain className="h-4 w-4 text-grey-600" />
                       <span className="text-sm font-medium">DALL-E 3 Integration</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -64,9 +64,9 @@ export const ResourcesPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">🎨 Image AI Features:</h4>
-                    <ul className="text-sm space-y-1 text-blue-700">
+                              <div className="p-4 bg-grey-50 border border-grey-200 rounded-lg">
+              <h4 className="font-semibold text-grey-800 mb-2">🎨 Image AI Features:</h4>
+              <ul className="text-sm space-y-1 text-grey-700">
                       <li>• Generate medical illustrations from text descriptions</li>
                       <li>• Analyze medical images for content and objects</li>
                       <li>• Create educational materials for clinical trials</li>
@@ -87,7 +87,7 @@ export const ResourcesPage: React.FC = () => {
       </Tabs>
 
       {/* Resources Overview */}
-      <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200 mx-4">
+              <Card className="bg-gradient-to-r from-green-50 to-grey-50 border-green-200 mx-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-green-800">
             <Sparkles className="h-5 w-5" />
@@ -107,11 +107,11 @@ export const ResourcesPage: React.FC = () => {
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-                <BookOpen className="h-8 w-8 text-blue-600" />
-              </div>
-              <h4 className="font-semibold text-blue-800 mb-2">Documentation</h4>
-              <p className="text-sm text-blue-700">
+                          <div className="w-16 h-16 mx-auto mb-4 bg-grey-100 rounded-full flex items-center justify-center">
+              <BookOpen className="h-8 w-8 text-grey-600" />
+            </div>
+            <h4 className="font-semibold text-grey-800 mb-2">Documentation</h4>
+            <p className="text-sm text-grey-700">
                 Comprehensive guides and API references
               </p>
             </div>

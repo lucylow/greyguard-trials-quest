@@ -87,12 +87,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
       </div>
 
       {/* Mission Statement */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mx-4">
+      <Card className="bg-gradient-to-r from-grey-50 to-grey-100 border-grey-200 mx-4">
         <CardContent className="p-4 sm:p-6 lg:p-8">
           <div className="text-center space-y-3 sm:space-y-4">
-            <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto text-blue-600" />
-            <h2 className="text-2xl sm:text-3xl font-bold text-blue-900">Our Mission</h2>
-            <p className="text-base sm:text-lg lg:text-xl text-blue-800 max-w-4xl mx-auto px-2">
+            <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto text-grey-600" />
+            <h2 className="text-2xl sm:text-3xl font-bold text-grey-900">Our Mission</h2>
+            <p className="text-base sm:text-lg lg:text-xl text-grey-800 max-w-4xl mx-auto px-2">
               To revolutionize clinical trial discovery by bringing transparency, privacy, and efficiency 
               to the process. We eliminate the grey areas that prevent patients from finding the right 
               trials while ensuring their data remains completely secure and private.

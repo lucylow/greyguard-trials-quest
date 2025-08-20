@@ -515,7 +515,7 @@ const AgentChat: React.FC<AgentChatProps> = ({
 
   const getIntentColor = (intent: string) => {
     const colors: Record<string, string> = {
-      'trial_search': 'bg-blue-100 text-blue-800',
+              'trial_search': 'bg-grey-100 text-grey-800',
       'profile_submission': 'bg-green-100 text-green-800',
       'consent_management': 'bg-purple-100 text-purple-800',
       'privacy_inquiry': 'bg-orange-100 text-orange-800',
@@ -704,7 +704,7 @@ const AgentChat: React.FC<AgentChatProps> = ({
                         <div className="space-y-2">
                           <div className="flex justify-between">
                             <span className="text-sm">Trial Search</span>
-                            <Badge className="bg-blue-100 text-blue-800">95% accuracy</Badge>
+                            <Badge className="bg-grey-100 text-grey-800">95% accuracy</Badge>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm">Profile Management</span>

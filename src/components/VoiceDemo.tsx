@@ -199,7 +199,7 @@ export const VoiceDemo: React.FC<VoiceDemoProps> = ({ className }) => {
             <CheckCircle className="h-3 w-3 mr-1" />
             Gemini AI Integration
           </Badge>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge variant="outline" className="bg-grey-50 text-grey-700 border-grey-200">
             <Target className="h-3 w-3 mr-1" />
             Real-time Processing
           </Badge>
@@ -353,7 +353,7 @@ export const VoiceDemo: React.FC<VoiceDemoProps> = ({ className }) => {
                   <div className="text-sm text-muted-foreground">Avg Response</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-grey-600">
                     {performanceMetrics.successRate.toFixed(1)}%
                   </div>
                   <div className="text-sm text-muted-foreground">Success Rate</div>
@@ -467,9 +467,9 @@ export const VoiceDemo: React.FC<VoiceDemoProps> = ({ className }) => {
       </Card>
 
       {/* Demo Instructions */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-gradient-to-r from-grey-50 to-grey-100 border-grey-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-800">
+          <CardTitle className="flex items-center gap-2 text-grey-800">
             <Zap className="h-5 w-5" />
             Demo Instructions
           </CardTitle>
@@ -477,8 +477,8 @@ export const VoiceDemo: React.FC<VoiceDemoProps> = ({ className }) => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <h5 className="font-semibold mb-2 text-blue-700">Try These Phrases:</h5>
-              <ul className="space-y-1 text-blue-600">
+              <h5 className="font-semibold mb-2 text-grey-700">Try These Phrases:</h5>
+              <ul className="space-y-1 text-grey-600">
                 <li>• "Hello, I'm looking for diabetes trials"</li>
                 <li>• "I need cancer treatment studies"</li>
                 <li>• "What heart disease trials are available?"</li>
@@ -486,8 +486,8 @@ export const VoiceDemo: React.FC<VoiceDemoProps> = ({ className }) => {
               </ul>
             </div>
             <div>
-              <h5 className="font-semibold mb-2 text-blue-700">Features to Demo:</h5>
-              <ul className="space-y-1 text-blue-600">
+              <h5 className="font-semibold mb-2 text-grey-700">Features to Demo:</h5>
+              <ul className="space-y-1 text-grey-600">
                 <li>• Real-time speech recognition</li>
                 <li>• AI agent processing</li>
                 <li>• Multi-language support</li>

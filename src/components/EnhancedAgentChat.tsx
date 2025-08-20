@@ -481,12 +481,12 @@ export const EnhancedAgentChat: React.FC<EnhancedAgentChatProps> = ({
                     
                     {/* Thoughts (when enabled) */}
                     {showThoughts && message.metadata.thought && (
-                      <div className="bg-blue-50 border border-blue-200 rounded p-2">
+                      <div className="bg-grey-50 border border-grey-200 rounded p-2">
                         <div className="flex items-center space-x-1 mb-1">
-                          <Brain className="h-3 w-3 text-blue-600" />
-                          <span className="text-blue-800 font-medium">AI Thought Process:</span>
+                          <Brain className="h-3 w-3 text-grey-600" />
+                          <span className="text-grey-800 font-medium">AI Thought Process:</span>
                         </div>
-                        <p className="text-blue-700 text-xs">{message.metadata.thought}</p>
+                        <p className="text-grey-700 text-xs">{message.metadata.thought}</p>
                       </div>
                     )}
                     

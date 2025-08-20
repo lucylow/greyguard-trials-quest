@@ -709,7 +709,7 @@ const ASIProtocol: React.FC<ASIProtocolProps> = ({ className }) => {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm font-medium">Ended</span>
-                          <Badge className="bg-blue-100 text-blue-800">{stats.ended}</Badge>
+                          <Badge className="bg-grey-100 text-grey-800">{stats.ended}</Badge>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm font-medium">Expired</span>
@@ -774,7 +774,7 @@ const ASIProtocol: React.FC<ASIProtocolProps> = ({ className }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm font-medium">Cleanup</span>
-                    <Badge className="bg-blue-100 text-blue-800">Auto</Badge>
+                    <Badge className="bg-grey-100 text-grey-800">Auto</Badge>
                   </div>
                 </div>
               </CardContent>

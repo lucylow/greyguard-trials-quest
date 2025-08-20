@@ -119,7 +119,7 @@ export const AgentPlatformPage: React.FC = () => {
                   <span className="text-sm font-medium">Privacy-First Design</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-blue-600" />
+                  <Activity className="h-4 w-4 text-grey-600" />
                   <span className="text-sm font-medium">Real-Time Processing</span>
                 </div>
               </div>
@@ -164,9 +164,9 @@ export const AgentPlatformPage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">💡 Pro Tips:</h4>
-                <ul className="text-sm space-y-1 text-blue-700">
+                          <div className="p-4 bg-grey-50 border border-grey-200 rounded-lg">
+              <h4 className="font-semibold text-grey-800 mb-2">💡 Pro Tips:</h4>
+              <ul className="text-sm space-y-1 text-grey-700">
                   <li>• Be specific about your condition and symptoms</li>
                   <li>• Include relevant medical history and treatments</li>
                   <li>• Mention your location and travel preferences</li>
@@ -254,9 +254,9 @@ export const AgentPlatformPage: React.FC = () => {
       </Tabs>
 
       {/* Platform Features Overview */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-gradient-to-r from-grey-50 to-grey-100 border-grey-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-800">
+          <CardTitle className="flex items-center gap-2 text-grey-800">
             <Sparkles className="h-5 w-5" />
             Platform Features
           </CardTitle>
@@ -264,11 +264,11 @@ export const AgentPlatformPage: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-                <Brain className="h-8 w-8 text-blue-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-grey-100 rounded-full flex items-center justify-center">
+                <Brain className="h-8 w-8 text-grey-600" />
               </div>
-              <h4 className="font-semibold text-blue-800 mb-2">Intelligent Matching</h4>
-              <p className="text-sm text-blue-700">
+              <h4 className="font-semibold text-grey-800 mb-2">Intelligent Matching</h4>
+              <p className="text-sm text-grey-700">
                 AI-powered analysis for precise clinical trial matching
               </p>
             </div>

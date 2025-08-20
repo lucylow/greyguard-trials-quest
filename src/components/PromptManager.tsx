@@ -221,7 +221,7 @@ const PromptManager: React.FC = () => {
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'trial_matching': 'bg-blue-100 text-blue-800',
+              'trial_matching': 'bg-grey-100 text-grey-800',
       'profile_management': 'bg-green-100 text-green-800',
       'consent_control': 'bg-purple-100 text-purple-800',
       'general_support': 'bg-gray-100 text-gray-800'

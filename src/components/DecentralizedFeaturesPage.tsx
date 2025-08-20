@@ -81,7 +81,7 @@ export const DecentralizedFeaturesPage: React.FC<DecentralizedFeaturesPageProps>
                   <span className="text-sm font-medium">Privacy-Preserving</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Cpu className="h-4 w-4 text-blue-600" />
+                  <Cpu className="h-4 w-4 text-grey-600" />
                   <span className="text-sm font-medium">Distributed Processing</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -90,9 +90,9 @@ export const DecentralizedFeaturesPage: React.FC<DecentralizedFeaturesPageProps>
                 </div>
               </div>
               
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">🔐 How MCP Works:</h4>
-                <ul className="text-sm space-y-1 text-blue-700">
+                          <div className="p-4 bg-grey-50 border border-grey-200 rounded-lg">
+              <h4 className="font-semibold text-grey-800 mb-2">🔐 How MCP Works:</h4>
+              <ul className="text-sm space-y-1 text-grey-700">
                   <li>• Data is encrypted and split across multiple parties</li>
                   <li>• Computations performed on encrypted data</li>
                   <li>• Results obtained without revealing raw data</li>
@@ -126,7 +126,7 @@ export const DecentralizedFeaturesPage: React.FC<DecentralizedFeaturesPageProps>
                   <span className="text-sm font-medium">Privacy-First Verification</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Lock className="h-4 w-4 text-blue-600" />
+                  <Lock className="h-4 w-4 text-grey-600" />
                   <span className="text-sm font-medium">Cryptographic Security</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export const DecentralizedFeaturesPage: React.FC<DecentralizedFeaturesPageProps>
       </Tabs>
 
       {/* Technology Overview */}
-      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+              <Card className="bg-gradient-to-r from-purple-50 to-grey-50 border-purple-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-purple-800">
             <Sparkles className="h-5 w-5" />

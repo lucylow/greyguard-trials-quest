@@ -392,7 +392,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-blue-600" />
+                    <Sparkles className="h-4 w-4 text-grey-600" />
                     <span className="text-sm font-medium">Gemini AI Integration</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -416,9 +416,9 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2">🎤 Voice Interface Features:</h4>
-                  <ul className="text-sm space-y-1 text-blue-700">
+                            <div className="p-4 bg-grey-50 border border-grey-200 rounded-lg">
+              <h4 className="font-semibold text-grey-800 mb-2">🎤 Voice Interface Features:</h4>
+              <ul className="text-sm space-y-1 text-grey-700">
                     <li>• Real-time speech recognition</li>
                     <li>• AI agent processing</li>
                     <li>• Multi-language support</li>

@@ -113,17 +113,17 @@ const AgentIntegration: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Enhanced Status Banner */}
-      <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+      <Card className="border-grey-200 bg-gradient-to-r from-grey-50 to-grey-100">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2">
-                <Brain className="h-5 w-5 text-blue-600" />
-                <Zap className="h-5 w-5 text-indigo-600" />
+                <Brain className="h-5 w-5 text-grey-600" />
+                <Zap className="h-5 w-5 text-grey-500" />
               </div>
               <div>
-                <h4 className="font-semibold text-blue-800">AI Agent Status</h4>
-                <p className="text-sm text-blue-700">
+                <h4 className="font-semibold text-grey-800">AI Agent Status</h4>
+                <p className="text-sm text-grey-700">
                   {asiOneConnected ? 'ASI:One Active' : 'ASI:One Inactive'} • 
                   {fallbackActive ? ' Fallback Mode' : ' Primary Mode'}
                 </p>
@@ -367,9 +367,9 @@ const AgentIntegration: React.FC = () => {
                 </Badge>
               </div>
               
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">Fallback Features:</h4>
-                <ul className="text-sm space-y-1 text-blue-700">
+                          <div className="p-4 bg-grey-50 border border-grey-200 rounded-lg">
+              <h4 className="font-semibold text-grey-800 mb-2">Fallback Features:</h4>
+              <ul className="text-sm space-y-1 text-grey-700">
                   <li>• Mock data generation for testing</li>
                   <li>• Basic trial matching algorithms</li>
                   <li>• Offline medical term explanations</li>
@@ -400,7 +400,7 @@ const AgentIntegration: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 border rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 mb-2">
+                  <div className="text-2xl font-bold text-grey-600 mb-2">
                     {(fetchAgentConnected || asiOneConnected) ? '1' : '0'}
                   </div>
                   <div className="text-sm text-muted-foreground">Active Agents</div>

@@ -39,10 +39,10 @@ export const ChatbotShowcase: React.FC = () => {
       </div>
 
       {/* Main AI Agent Chat */}
-      <Card className="border-2 border-blue-200">
-        <CardHeader className="bg-blue-50">
+      <Card className="border-2 border-grey-200">
+        <CardHeader className="bg-grey-50">
           <CardTitle className="flex items-center space-x-2">
-            <Bot className="h-5 w-5 text-blue-600" />
+            <Bot className="h-5 w-5 text-grey-600" />
             <span>Main AI Agent Chat</span>
             <Badge variant="default">ASI:One Active</Badge>
           </CardTitle>
@@ -155,29 +155,29 @@ export const ChatbotShowcase: React.FC = () => {
       </Card>
 
       {/* Feature Explanation */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50">
+      <Card className="bg-gradient-to-r from-grey-50 to-grey-100">
         <CardHeader>
-          <CardTitle className="text-center text-blue-800">Chatbot Features</CardTitle>
+          <CardTitle className="text-center text-grey-800">Chatbot Features</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold text-blue-800">Input Icons</h4>
-              <ul className="space-y-2 text-sm text-blue-700">
+              <h4 className="font-semibold text-grey-800">Input Icons</h4>
+              <ul className="space-y-2 text-sm text-grey-700">
                 <li className="flex items-center space-x-2">
-                  <span className="w-4 h-4 bg-blue-200 rounded flex items-center justify-center">📎</span>
+                  <span className="w-4 h-4 bg-grey-200 rounded flex items-center justify-center">📎</span>
                   <span>File Attachment - Upload documents and images</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-4 h-4 bg-blue-200 rounded flex items-center justify-center">🌐</span>
+                  <span className="w-4 h-4 bg-grey-200 rounded flex items-center justify-center">🌐</span>
                   <span>Web Search - Search the internet for information</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-4 h-4 bg-blue-200 rounded flex items-center justify-center">🔍</span>
+                  <span className="w-4 h-4 bg-grey-200 rounded flex items-center justify-center">🔍</span>
                   <span>Agent Search - Find specific AI agents</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-4 h-4 bg-blue-200 rounded flex items-center justify-center">⚙️</span>
+                  <span className="w-4 h-4 bg-grey-200 rounded flex items-center justify-center">⚙️</span>
                   <span>Filter - Adjust settings and preferences</span>
                 </li>
               </ul>

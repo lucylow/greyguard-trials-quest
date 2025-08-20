@@ -117,7 +117,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             }}
             className={`h-8 w-8 p-0 ${
               activeMode === 'web' 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                ? 'bg-grey-600 text-white hover:bg-grey-700' 
                 : 'text-muted-foreground hover:bg-muted'
             }`}
             title="Web search mode"
@@ -135,7 +135,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             }}
             className={`h-8 w-8 p-0 ${
               activeMode === 'agent' 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                ? 'bg-grey-600 text-white hover:bg-grey-700' 
                 : 'text-muted-foreground hover:bg-muted'
             }`}
             title="Agent search mode"
@@ -153,7 +153,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             }}
             className={`h-8 w-8 p-0 ${
               activeMode === 'filter' 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                ? 'bg-grey-600 text-white hover:bg-grey-700' 
                 : 'text-muted-foreground hover:bg-muted'
             }`}
             title="Filter and settings"

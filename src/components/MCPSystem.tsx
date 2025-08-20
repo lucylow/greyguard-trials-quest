@@ -435,7 +435,7 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
                   <span>{period.temperature}°{period.temperatureUnit}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Wind className="h-4 w-4 text-blue-500" />
+                  <Wind className="h-4 w-4 text-grey-500" />
                   <span>{period.windSpeed} {period.windDirection}</span>
                 </div>
               </div>
@@ -465,11 +465,11 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
                     <span>{data.current.condition}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Wind className="h-5 w-5 text-blue-500" />
+                    <Wind className="h-5 w-5 text-grey-500" />
                     <span>{data.current.windSpeed} mph {data.current.windDirection}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Droplets className="h-5 w-5 text-blue-500" />
+                    <Droplets className="h-5 w-5 text-grey-500" />
                     <span>{data.current.humidity}% humidity</span>
                   </div>
                 </div>
@@ -908,7 +908,7 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
                         <div className="text-sm text-muted-foreground">Success Rate</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-2xl font-bold text-grey-600">
                           {agentStatus.totalRequests}
                         </div>
                         <div className="text-sm text-muted-foreground">Total Requests</div>
