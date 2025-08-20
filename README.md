@@ -1,4 +1,7 @@
-# Clinical Trial Matching System
+# Grey Guard Clinical Trial Matching System
+
+ ![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
+
 
 A decentralized clinical trial matching system using Fetch.ai's uAgents and the Internet Computer Protocol (ICP). The system enables privacy-preserving matching of patients with clinical trials while maintaining data security and patient control.
 
