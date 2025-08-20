@@ -44,24 +44,43 @@ interface AgentChatProps {
   onProfileSubmit?: (profile: any) => void;
   onTrialMatch?: (matches: any[]) => void;
   onConsentUpdate?: (consent: any) => void;
+  fallbackMode?: boolean;
+  mockData?: any;
 }
 
 const AgentChat: React.FC<AgentChatProps> = ({ 
   onProfileSubmit, 
   onTrialMatch, 
-  onConsentUpdate 
+  onConsentUpdate,
+  fallbackMode = false,
+  mockData = null
 }) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: "Hello! I'm your GreyGuard AI agent with advanced natural language understanding. I can help you with:\n\n• **Submit Health Profile** - Securely upload your encrypted medical data\n• **Find Clinical Trials** - Search for matching trials using AI\n• **Manage Consent** - Grant or revoke trial participation consent\n• **View Audit Logs** - See your blockchain-anchored activity history\n\n💡 **New**: I now understand natural language better! Try asking me things like:\n- \"I need immunotherapy trials for lung cancer near New York\"\n- \"Help me submit my health profile for diabetes research\"\n- \"Show me my consent history for the last month\"\n\nWhat would you like to do today?",
-      sender: 'agent',
-      timestamp: new Date().toISOString(),
-      type: 'text',
-      intent: 'welcome',
-      confidence: 1.0
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  // Initialize welcome message based on fallback mode
+  useEffect(() => {
+    const welcomeMessage: Message = fallbackMode 
+      ? {
+          id: '1',
+          content: "Hello! I'm your GreyGuard AI agent (Gemini Fallback Mode). I can help you with:\n\n• **Submit Health Profile** - Securely upload your encrypted medical data\n• **Find Clinical Trials** - Search for matching trials using AI\n• **Manage Consent** - Grant or revoke trial participation consent\n• **View Audit Logs** - See your blockchain-anchored activity history\n\n⚠️ **Fallback Mode**: Currently using Gemini agent with mock data while Fetch.ai agent reconnects.\n\n💡 **Try asking me things like:**\n- \"I need immunotherapy trials for lung cancer near New York\"\n- \"Help me submit my health profile for diabetes research\"\n- \"Show me my consent history for the last month\"\n\nWhat would you like to do today?",
+          sender: 'agent' as const,
+          timestamp: new Date().toISOString(),
+          type: 'text',
+          intent: 'welcome',
+          confidence: 1.0
+        }
+      : {
+          id: '1',
+          content: "Hello! I'm your GreyGuard AI agent with advanced natural language understanding. I can help you with:\n\n• **Submit Health Profile** - Securely upload your encrypted medical data\n• **Find Clinical Trials** - Search for matching trials using AI\n• **Manage Consent** - Grant or revoke trial participation consent\n• **View Audit Logs** - See your blockchain-anchored activity history\n\n💡 **New**: I now understand natural language better! Try asking me things like:\n- \"I need immunotherapy trials for lung cancer near New York\"\n- \"Help me submit my health profile for diabetes research\"\n- \"Show me my consent history for the last month\"\n\nWhat would you like to do today?",
+          sender: 'agent' as const,
+          timestamp: new Date().toISOString(),
+          type: 'text',
+          intent: 'welcome',
+          confidence: 1.0
+        };
+
+    setMessages([welcomeMessage]);
+  }, [fallbackMode]);
   
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -149,6 +168,47 @@ const AgentChat: React.FC<AgentChatProps> = ({
     }
   };
 
+  // Generate fallback response using mock data
+  const generateFallbackResponse = async (
+    intent: IntentClassification, 
+    input: string, 
+    mockData: any
+  ): Promise<string> => {
+    const inputLower = input.toLowerCase();
+    
+    switch (intent.intent) {
+      case 'trial_search':
+        if (mockData?.trials) {
+          const relevantTrials = mockData.trials.filter((trial: any) => 
+            inputLower.includes('lung') || inputLower.includes('cancer') || 
+            inputLower.includes('diabetes') || inputLower.includes('trial')
+          );
+          
+          if (relevantTrials.length > 0) {
+            return `🔍 **Trial Search Results (Fallback Mode)**\n\nI found ${relevantTrials.length} relevant clinical trials:\n\n${relevantTrials.map((trial: any) => 
+              `**${trial.title}**\n• Status: ${trial.status}\n• Location: ${trial.location}\n• Match Score: ${trial.matchScore}%\n• Phase: ${trial.phase}\n`
+            ).join('\n')}\n\n⚠️ *Note: This is fallback mode using mock data. Real-time Fetch.ai agent data will resume when connection is restored.*`;
+          }
+        }
+        return `🔍 **Trial Search (Fallback Mode)**\n\nI'm currently in fallback mode using Gemini agent with mock data. I can help you find clinical trials, but please note:\n\n• Using simulated data for demonstration\n• Real-time Fetch.ai agent will resume when connection is restored\n• Your privacy and security are still fully protected\n\nWhat type of clinical trials are you looking for?`;
+        
+      case 'profile_submission':
+        return `📋 **Health Profile Submission (Fallback Mode)**\n\nI can help you submit your health profile for clinical trial matching. In fallback mode, I'll:\n\n• Guide you through the submission process\n• Use local encryption for your data\n• Store information securely until Fetch.ai agent reconnects\n• Maintain full HIPAA compliance\n\nWould you like to start the profile submission process?`;
+        
+      case 'consent_management':
+        return `✅ **Consent Management (Fallback Mode)**\n\nI can help you manage your clinical trial consent preferences. In fallback mode:\n\n• View your current consent settings\n• Update consent for specific trials\n• Manage data sharing preferences\n• Track consent history locally\n\nWhat would you like to do with your consent settings?`;
+        
+      case 'privacy_inquiry':
+        return `🔒 **Privacy & Security (Fallback Mode)**\n\nYour privacy and security remain fully protected even in fallback mode:\n\n• All data is locally encrypted\n• Zero-knowledge proofs still active\n• Blockchain anchoring continues\n• HIPAA compliance maintained\n• No data leaves your device\n\nHow can I help with your privacy concerns?`;
+        
+      case 'audit_request':
+        return `📊 **Audit Log (Fallback Mode)**\n\nI can show you your activity history and audit trail. In fallback mode:\n\n• View recent interactions\n• See data access logs\n• Check blockchain transactions\n• Monitor privacy settings changes\n\nWould you like to see your audit log?`;
+        
+      default:
+        return `🤖 **AI Assistant (Fallback Mode)**\n\nI'm currently operating in fallback mode using Gemini agent while the Fetch.ai agent reconnects. I can still help you with:\n\n• Clinical trial searches\n• Health profile management\n• Consent management\n• Privacy and security questions\n• General assistance\n\nWhat would you like help with today?`;
+    }
+  };
+
   const processAgentResponse = async (
     userInput: string, 
     intent: IntentClassification, 
@@ -160,32 +220,39 @@ const AgentChat: React.FC<AgentChatProps> = ({
     let response = contextualResponse;
     let responseType: Message['type'] = 'text';
     
-    switch (intent.intent) {
-      case 'trial_search':
-        responseType = 'trial_match';
-        response = await generateTrialSearchResponse(intent, input);
-        break;
-        
-      case 'profile_submission':
-        responseType = 'profile_submission';
-        response = await generateProfileSubmissionResponse(intent, input);
-        break;
-        
-      case 'consent_management':
-        responseType = 'consent_update';
-        response = await generateConsentManagementResponse(intent, input);
-        break;
-        
-      case 'privacy_inquiry':
-        response = await generatePrivacyResponse(intent, input);
-        break;
-        
-      case 'audit_request':
-        response = await generateAuditResponse(intent, input);
-        break;
-        
-      default:
-        response = await generateGeneralResponse(intent, input);
+    if (fallbackMode) {
+      // Use fallback mode with mock data
+      response = await generateFallbackResponse(intent, input, mockData);
+      responseType = intent.intent === 'trial_search' ? 'trial_match' : 'text';
+    } else {
+      // Use primary Fetch.ai agent mode
+      switch (intent.intent) {
+        case 'trial_search':
+          responseType = 'trial_match';
+          response = await generateTrialSearchResponse(intent, input);
+          break;
+          
+        case 'profile_submission':
+          responseType = 'profile_submission';
+          response = await generateProfileSubmissionResponse(intent, input);
+          break;
+          
+        case 'consent_management':
+          responseType = 'consent_update';
+          response = await generateConsentManagementResponse(intent, input);
+          break;
+          
+        case 'privacy_inquiry':
+          response = await generatePrivacyResponse(intent, input);
+          break;
+          
+        case 'audit_request':
+          response = await generateAuditResponse(intent, input);
+          break;
+          
+        default:
+          response = await generateGeneralResponse(intent, input);
+      }
     }
 
     return {

@@ -15,25 +15,38 @@ import {
   Globe
 } from 'lucide-react';
 
-export const HomePage: React.FC = () => {
+interface HomePageProps {
+  onNavigateToTab: (tabName: string) => void;
+}
+
+export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="text-center space-y-6 py-12">
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary">
+      <div className="text-center space-y-4 sm:space-y-6 py-8 sm:py-12 px-4">
+        <div className="space-y-3 sm:space-y-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-primary leading-tight">
             No more grey areas in clinical matching
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto px-4">
             Decentralized Clinical Trial Matching powered by AI and blockchain technology
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <Button size="lg" className="text-lg px-8 py-6">
-              <Target className="mr-2 h-5 w-5" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+            <Button 
+              size="lg" 
+              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+              onClick={() => onNavigateToTab('clinical-trials')}
+            >
+              <Target className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Find Clinical Trials
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-              <Brain className="mr-2 h-5 w-5" />
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+              onClick={() => onNavigateToTab('agent-platform')}
+            >
+              <Brain className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Learn About AI Agents
             </Button>
           </div>
@@ -41,45 +54,45 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* Trust Indicators */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="text-center p-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-            <Shield className="h-8 w-8 text-primary" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
+        <Card className="text-center p-4 sm:p-6">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Data Encrypted</h3>
-          <p className="text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold mb-2">Data Encrypted</h3>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Your personal health information is protected with end-to-end encryption
           </p>
         </Card>
 
-        <Card className="text-center p-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+        <Card className="text-center p-4 sm:p-6">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-green-100 rounded-full flex items-center justify-center">
+            <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">HIPAA Compliant</h3>
-          <p className="text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold mb-2">HIPAA Compliant</h3>
+          <p className="text-sm sm:text-base text-muted-foreground">
             We meet all healthcare privacy and security standards
           </p>
         </Card>
 
-        <Card className="text-center p-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
-            <Lock className="h-8 w-8 text-purple-600" />
+        <Card className="text-center p-4 sm:p-6">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+            <Lock className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Zero-Knowledge Proofs</h3>
-          <p className="text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold mb-2">Zero-Knowledge Proofs</h3>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Advanced cryptography ensures your data remains private during matching
           </p>
         </Card>
       </div>
 
       {/* Mission Statement */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <CardContent className="p-8">
-          <div className="text-center space-y-4">
-            <Sparkles className="h-12 w-12 mx-auto text-blue-600" />
-            <h2 className="text-3xl font-bold text-blue-900">Our Mission</h2>
-            <p className="text-xl text-blue-800 max-w-4xl mx-auto">
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mx-4">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
+          <div className="text-center space-y-3 sm:space-y-4">
+            <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto text-blue-600" />
+            <h2 className="text-2xl sm:text-3xl font-bold text-blue-900">Our Mission</h2>
+            <p className="text-base sm:text-lg lg:text-xl text-blue-800 max-w-4xl mx-auto px-2">
               To revolutionize clinical trial discovery by bringing transparency, privacy, and efficiency 
               to the process. We eliminate the grey areas that prevent patients from finding the right 
               trials while ensuring their data remains completely secure and private.
@@ -89,9 +102,9 @@ export const HomePage: React.FC = () => {
       </Card>
 
       {/* Key Features */}
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-center">Key Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-4 sm:space-y-6 px-4">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center">Key Features</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

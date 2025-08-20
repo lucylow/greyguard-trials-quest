@@ -361,20 +361,22 @@ const Index = () => {
       {/* Header */}
       <header className="bg-blue-900 text-white shadow-lg">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
-              <Stethoscope className="h-10 w-10" />
-              <div>
-                <h1 className="text-2xl font-bold">GreyGuard Trials</h1>
-                <p className="text-sm opacity-90">Decentralized Clinical Trial Matching</p>
+              <Stethoscope className="h-8 w-8 sm:h-10 sm:w-10" />
+              <div className="text-center sm:text-left">
+                <h1 className="text-xl sm:text-2xl font-bold">GreyGuard Trials</h1>
+                <p className="text-xs sm:text-sm opacity-90">Decentralized Clinical Trial Matching</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <PrivacyStatus />
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden sm:block">
+                <PrivacyStatus />
+              </div>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
-                    <HelpCircle className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 h-9 w-9 sm:h-10 sm:w-10">
+                    <HelpCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -387,19 +389,19 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="home">Home</TabsTrigger>
-            <TabsTrigger value="clinical-trials">Clinical Trials</TabsTrigger>
-            <TabsTrigger value="agent-platform">Agent Platform</TabsTrigger>
-            <TabsTrigger value="decentralized">Decentralized Features</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2">
+            <TabsTrigger value="home" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Home</TabsTrigger>
+            <TabsTrigger value="clinical-trials" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Clinical Trials</TabsTrigger>
+            <TabsTrigger value="agent-platform" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Agent Platform</TabsTrigger>
+            <TabsTrigger value="decentralized" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Decentralized</TabsTrigger>
+            <TabsTrigger value="resources" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Resources</TabsTrigger>
           </TabsList>
 
           {/* Home Tab */}
           <TabsContent value="home" className="space-y-6">
-            <HomePage />
+            <HomePage onNavigateToTab={setActiveTab} />
           </TabsContent>
 
           {/* Clinical Trials Tab */}

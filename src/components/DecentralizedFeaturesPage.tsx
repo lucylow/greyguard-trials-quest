@@ -63,111 +63,103 @@ export const DecentralizedFeaturesPage: React.FC<DecentralizedFeaturesPageProps>
 
         {/* MCP System Tab */}
         <TabsContent value="mcp-system" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Network className="h-5 w-5 text-primary" />
-                    Multi-Party Computation
-                  </CardTitle>
-                  <CardDescription>
-                    Secure data analysis without exposing individual information
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4 text-green-600" />
-                      <span className="text-sm font-medium">Privacy-Preserving</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Cpu className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-medium">Distributed Processing</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-purple-600" />
-                      <span className="text-sm font-medium">Multi-Party Collaboration</span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">🔐 How MCP Works:</h4>
-                    <ul className="text-sm space-y-1 text-blue-700">
-                      <li>• Data is encrypted and split across multiple parties</li>
-                      <li>• Computations performed on encrypted data</li>
-                      <li>• Results obtained without revealing raw data</li>
-                      <li>• Perfect for sensitive medical information</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div>
-              <MCPSystem />
-            </div>
-          </div>
+          {/* Multi-Party Computation Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Network className="h-5 w-5 text-primary" />
+                Multi-Party Computation
+              </CardTitle>
+              <CardDescription>
+                Secure data analysis without exposing individual information
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Privacy-Preserving</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">Distributed Processing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium">Multi-Party Collaboration</span>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">🔐 How MCP Works:</h4>
+                <ul className="text-sm space-y-1 text-blue-700">
+                  <li>• Data is encrypted and split across multiple parties</li>
+                  <li>• Computations performed on encrypted data</li>
+                  <li>• Results obtained without revealing raw data</li>
+                  <li>• Perfect for sensitive medical information</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* MCP System Component */}
+          <MCPSystem />
         </TabsContent>
 
         {/* ZKP Demo Tab */}
         <TabsContent value="zkp-demo" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Key className="h-5 w-5 text-primary" />
-                    Zero-Knowledge Proofs
-                  </CardTitle>
-                  <CardDescription>
-                    Prove eligibility without revealing personal details
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-green-600" />
-                      <span className="text-sm font-medium">Privacy-First Verification</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Lock className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-medium">Cryptographic Security</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Database className="h-4 w-4 text-purple-600" />
-                      <span className="text-sm font-medium">Data Minimization</span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                    <h4 className="font-semibold text-purple-800 mb-2">🔒 ZKP Benefits:</h4>
-                    <ul className="text-sm space-y-1 text-purple-700">
-                      <li>• Verify medical conditions without sharing details</li>
-                      <li>• Prove age eligibility without revealing birth date</li>
-                      <li>• Confirm location without exposing address</li>
-                      <li>• Maintain complete privacy during verification</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div>
-              <ZKPDemo 
-                zkpForm={zkpForm}
-                setZkpForm={setZkpForm}
-                generatedProof={generatedProof}
-                verifyPatientId={verifyPatientId}
-                setVerifyPatientId={setVerifyPatientId}
-                verificationResult={verificationResult}
-                zkpLoading={zkpLoading}
-                verifyLoading={verifyLoading}
-                generateZKProof={generateZKProof}
-                verifyZKProof={verifyZKProof}
-              />
-            </div>
-          </div>
+          {/* Zero-Knowledge Proofs Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5 text-primary" />
+                Zero-Knowledge Proofs
+              </CardTitle>
+              <CardDescription>
+                Prove eligibility without revealing personal details
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Privacy-First Verification</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">Cryptographic Security</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium">Data Minimization</span>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                <h4 className="font-semibold text-purple-800 mb-2">🔒 ZKP Benefits:</h4>
+                <ul className="text-sm space-y-1 text-purple-700">
+                  <li>• Verify medical conditions without sharing details</li>
+                  <li>• Prove age eligibility without revealing birth date</li>
+                  <li>• Confirm location without exposing address</li>
+                  <li>• Maintain complete privacy during verification</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ZKP Demo Component */}
+          <ZKPDemo 
+            zkpForm={zkpForm}
+            setZkpForm={setZkpForm}
+            generatedProof={generatedProof}
+            verifyPatientId={verifyPatientId}
+            setVerifyPatientId={setVerifyPatientId}
+            verificationResult={verificationResult}
+            zkpLoading={zkpLoading}
+            verifyLoading={verifyLoading}
+            generateZKProof={generateZKProof}
+            verifyZKProof={verifyZKProof}
+          />
         </TabsContent>
 
 

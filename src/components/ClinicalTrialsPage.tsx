@@ -260,29 +260,29 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Clinical Trials</h1>
-        <p className="text-muted-foreground">
+      <div className="text-center space-y-2 px-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">Clinical Trials</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Find the right clinical trials for your condition with AI-powered matching
         </p>
       </div>
 
       {/* Main Content Tabs */}
       <Tabs value={activeSubTab} onValueChange={setActiveSubTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="matching">Trial Matching</TabsTrigger>
-          <TabsTrigger value="details" disabled={!selectedTrial}>
+        <TabsList className="grid w-full grid-cols-3 gap-1 sm:gap-2">
+          <TabsTrigger value="matching" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Trial Matching</TabsTrigger>
+          <TabsTrigger value="details" disabled={!selectedTrial} className="text-xs sm:text-sm px-2 sm:px-3 py-2">
             Trial Details
           </TabsTrigger>
-          <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
+          <TabsTrigger value="voice-ai" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Voice AI</TabsTrigger>
         </TabsList>
 
         {/* Trial Matching Tab */}
-        <TabsContent value="matching" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <TabsContent value="matching" className="space-y-4 sm:space-y-6 px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Chat Interface */}
             <div className="lg:col-span-2">
-              <Card className="h-[500px] flex flex-col">
+              <Card className="h-[400px] sm:h-[500px] flex flex-col">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Activity className="h-5 w-5 text-primary" />
@@ -314,7 +314,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                   
                   {/* Input Form */}
                   <form onSubmit={handleChatSubmit} className="space-y-3">
-                    <div className="flex space-x-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Input
                         placeholder="Describe symptoms (e.g., Stage 3 breast cancer)"
                         value={symptoms}
@@ -325,7 +325,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                         placeholder="Location"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        className="w-32"
+                        className="w-full sm:w-32"
                       />
                     </div>
                     <Button 
