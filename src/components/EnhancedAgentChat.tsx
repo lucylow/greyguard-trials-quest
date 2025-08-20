@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { enhancedAgentService } from "@/services/enhancedAgentService";
 import { asiOneService, ASIStreamChunk } from "@/services/asiOneService";
+import { ChatInput } from "./ChatInput";
 import {
   Send,
   Bot,
@@ -34,7 +35,11 @@ import {
   Target,
   Stethoscope,
   Heart,
-  Pill
+  Pill,
+  Paperclip,
+  Globe,
+  Search,
+  Filter
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -96,6 +101,7 @@ export const EnhancedAgentChat: React.FC<EnhancedAgentChatProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [chatMode, setChatMode] = useState<'general' | 'trial_search' | 'medical_help' | 'eligibility'>('general');
+  const [activeMode, setActiveMode] = useState<'web' | 'agent' | 'filter'>('web');
 
   // Refs
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -544,56 +550,23 @@ export const EnhancedAgentChat: React.FC<EnhancedAgentChatProps> = ({
 
       <Separator />
 
-      {/* Input Area */}
+      {/* Enhanced Input Area - Using Reusable Component */}
       <div className="p-4">
-        <div className="flex space-x-2">
-          <div className="flex-1 relative">
-            <Input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me about clinical trials, medical terms, or eligibility..."
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
-              disabled={isLoading}
-              className="pr-20"
-            />
-            
-            {/* Character count */}
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground">
-              {input.length}/1000
-            </div>
-          </div>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleVoiceInput}
-            className={`h-10 w-10 ${isListening ? 'bg-red-100 text-red-600' : ''}`}
-          >
-            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-          </Button>
-          
-          <Button
-            onClick={sendMessage}
-            disabled={!input.trim() || isLoading}
-            className="h-10 px-4"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-            <span className="ml-2 hidden sm:inline">Send</span>
-          </Button>
-        </div>
+        <ChatInput
+          placeholder="Ask anything to ASI:One or use @handle to reach an agent directly"
+          onSubmit={sendMessage}
+          onFileAttach={() => toast({ title: "File attachment", description: "File attachment feature coming soon!" })}
+          onWebSearch={() => toast({ title: "Web search", description: "Web search mode activated" })}
+          onAgentSearch={() => toast({ title: "Agent search", description: "Agent search mode activated" })}
+          onFilter={() => toast({ title: "Filter", description: "Filter and settings opened" })}
+          onVoiceToggle={toggleVoiceInput}
+          isListening={isListening}
+          modelName="ASI1-mini"
+          disabled={isLoading}
+        />
         
         {/* Status Bar */}
-        <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+        <div className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               {isMuted ? <VolumeX className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}

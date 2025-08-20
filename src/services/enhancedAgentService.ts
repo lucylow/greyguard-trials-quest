@@ -83,7 +83,7 @@ export class EnhancedAgentService {
     return `session_${sender.slice(0, 8)}_${timestamp}_${random}`;
   }
 
-  private endSession(sessionId: string): boolean {
+  private _endSessionInternal(sessionId: string): boolean {
     const session = this.activeSessions.get(sessionId);
     if (session) {
       session.status = 'ended';
@@ -98,11 +98,11 @@ export class EnhancedAgentService {
     const now = new Date();
     const maxAge = 30 * 60 * 1000; // 30 minutes
 
-    for (const [sessionId, session] of this.activeSessions.entries()) {
-      if (now.getTime() - session.last_activity.getTime() > maxAge) {
-        this.endSession(sessionId);
+          for (const [sessionId, session] of this.activeSessions.entries()) {
+        if (now.getTime() - session.last_activity.getTime() > maxAge) {
+          this._endSessionInternal(sessionId);
+        }
       }
-    }
   }
 
   // ASI1 Protocol Implementation

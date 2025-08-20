@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Activity, 
-  Send, 
-  Loader2, 
-  FileText, 
+import {
+  Activity,
+  Send,
+  Loader2,
+  FileText,
   MapPin,
   Shield,
   CheckCircle,
@@ -17,9 +17,16 @@ import {
   ExternalLink,
   Mic,
   Brain,
-  Sparkles
+  Sparkles,
+  Paperclip,
+  Globe,
+  Search,
+  Filter,
+  X
 } from 'lucide-react';
 import { VoiceDemo } from './VoiceDemo';
+import { ChatInput } from './ChatInput';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ClinicalTrialsPageProps {
   symptoms: string;
@@ -58,6 +65,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
     }
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,8 +143,8 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
           Trial Results
         </CardTitle>
         <CardDescription>
-          {matches.length > 0 
-            ? `${matches.length} matching trials found` 
+          {matches.length > 0
+            ? `${matches.length} matching trials found`
             : 'No trials found yet. Describe your symptoms to get started.'
           }
         </CardDescription>
@@ -163,7 +171,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                     {trial.status}
                   </Badge>
                 </div>
-                
+
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-3 w-3" />
@@ -292,10 +300,10 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                     Describe your symptoms to find matching trials with privacy protection
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="flex-1 flex flex-col">
                   {/* Chat Messages */}
-                  <div 
+                  <div
                     ref={chatContainerRef}
                     className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-muted/30 rounded-lg"
                   >
@@ -311,7 +319,7 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Input Form */}
                   <form onSubmit={handleChatSubmit} className="space-y-3">
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -322,14 +330,26 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                         className="flex-1"
                       />
                       <Input
-                        placeholder="Location"
+                        placeholder="Location (e.g., New York, NY)"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         className="w-full sm:w-32"
                       />
                     </div>
-                    <Button 
-                      type="submit" 
+
+                    {/* Enhanced Chat Input Area - Using Reusable Component */}
+                    <ChatInput
+                      placeholder="Ask anything to ASI:One or use @handle to reach an agent directly"
+                      onFileAttach={() => toast({ title: "File attachment", description: "File attachment feature coming soon!" })}
+                      onWebSearch={() => toast({ title: "Web search", description: "Web search mode activated" })}
+                      onAgentSearch={() => toast({ title: "Agent search", description: "Agent search mode activated" })}
+                      onFilter={() => toast({ title: "Filter", description: "Filter and settings opened" })}
+                      onVoiceToggle={() => toast({ title: "Voice input", description: "Voice input feature coming soon!" })}
+                      modelName="ASI1-mini"
+                    />
+
+                    <Button
+                      type="submit"
                       disabled={isProcessing || !symptoms.trim()}
                       className="w-full"
                     >
@@ -340,12 +360,12 @@ export const ClinicalTrialsPage: React.FC<ClinicalTrialsPageProps> = ({
                 </CardContent>
               </Card>
             </div>
-            
+
             {/* Results Panel */}
             <div>
-              <TrialResults 
-                matches={matches} 
-                onSelect={onTrialSelect} 
+              <TrialResults
+                matches={matches}
+                onSelect={onTrialSelect}
                 selectedTrial={selectedTrial}
               />
             </div>
