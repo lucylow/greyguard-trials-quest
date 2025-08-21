@@ -2,7 +2,7 @@ import { toast } from "@/hooks/use-toast";
 
 // ASI:One API Configuration
 const ASI_API_URL = 'https://api.asi1.ai/v1/chat/completions';
-const ASI_API_KEY = process.env.REACT_APP_ASI_API_KEY || '';
+const ASI_API_KEY = import.meta.env.VITE_ASI_API_KEY || '';
 
 // ASI:One API Models
 export interface ASIMessage {
