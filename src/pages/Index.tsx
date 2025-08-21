@@ -8,6 +8,9 @@ import { ClinicalTrialsPage } from '../components/ClinicalTrialsPage';
 import { DecentralizedFeaturesPage } from '../components/DecentralizedFeaturesPage';
 import { ResourcesPage } from '../components/ResourcesPage';
 import { AgentPlatformPage } from '../components/AgentPlatformPage';
+import DemoConversationInterface from '../components/DemoConversationInterface';
+import PricingPage from '../components/PricingPage';
+import LanguageSelector from '../components/LanguageSelector';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -100,6 +103,9 @@ const Index = () => {
                 <p className="text-xs sm:text-sm opacity-90">Decentralized Clinical Trial Matching</p>
               </div>
             </div>
+            <div className="flex items-center space-x-3">
+              <LanguageSelector variant="compact" />
+            </div>
           </div>
         </div>
       </header>
@@ -107,12 +113,13 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2">
             <TabsTrigger value="home" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Home</TabsTrigger>
             <TabsTrigger value="clinical-trials" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Clinical Trials</TabsTrigger>
             <TabsTrigger value="agent-platform" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Agent Platform</TabsTrigger>
             <TabsTrigger value="decentralized" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Decentralized</TabsTrigger>
-            <TabsTrigger value="resources" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Resources</TabsTrigger>
+            <TabsTrigger value="demo-conversations" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Demo</TabsTrigger>
+            <TabsTrigger value="pricing" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Pricing</TabsTrigger>
           </TabsList>
 
           {/* Home Tab */}
@@ -158,9 +165,14 @@ const Index = () => {
             />
           </TabsContent>
 
-          {/* Resources Tab */}
-          <TabsContent value="resources" className="space-y-6">
-            <ResourcesPage />
+          {/* Demo Conversations Tab */}
+          <TabsContent value="demo-conversations" className="space-y-6">
+            <DemoConversationInterface />
+          </TabsContent>
+
+          {/* Pricing Tab */}
+          <TabsContent value="pricing" className="space-y-6">
+            <PricingPage />
           </TabsContent>
         </Tabs>
       </div>

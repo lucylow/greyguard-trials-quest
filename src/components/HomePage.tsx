@@ -12,7 +12,9 @@ import {
   Sparkles,
   Target,
   Users,
-  Globe
+  Globe,
+  MessageSquare,
+  TrendingUp
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -48,6 +50,24 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
             >
               <Brain className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Learn About AI Agents
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+              onClick={() => onNavigateToTab('demo-conversations')}
+            >
+              <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              View Demo Conversations
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+              onClick={() => onNavigateToTab('pricing')}
+            >
+              <TrendingUp className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              View Pricing
             </Button>
           </div>
         </div>
