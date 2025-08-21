@@ -10,6 +10,12 @@ import {
   DropdownMenuLabel
 } from './ui/dropdown-menu';
 import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
+import { 
   Wallet, 
   CheckCircle, 
   XCircle, 
@@ -69,6 +75,8 @@ export default function WalletConnection({ className, variant = 'default' }: Wal
     }
 
     setIsConnecting(true);
+    setLastError(null);
+    
     try {
       console.log('Attempting to connect to Plug wallet...');
       const info = await icpWalletService.connect();
@@ -76,6 +84,8 @@ export default function WalletConnection({ className, variant = 'default' }: Wal
       if (info) {
         console.log('Connection successful:', info);
         setWalletInfo(info);
+        setLastError(null);
+        setConnectionAttempts(0);
         toast({
           title: "Wallet Connected!",
           description: `Connected to ${info.walletName}`,
@@ -171,34 +181,44 @@ export default function WalletConnection({ className, variant = 'default' }: Wal
   if (variant === 'compact') {
     if (walletInfo?.isConnected) {
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="bg-slate-800 text-white border-slate-600 hover:bg-slate-700">
-              <CheckCircle className="h-4 w-4 mr-2 text-green-400" />
-              {formatPrincipal(walletInfo.principal)}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
-              Plug Wallet
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              <span className="font-mono text-xs">{walletInfo.principal}</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
-              <Coins className="h-4 w-4" />
-              <span>Balance: {walletInfo.balance || '0.0'} ICP</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleDisconnect} className="flex items-center gap-2 text-red-600">
-              <LogOut className="h-4 w-4" />
-              Disconnect
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="bg-green-600 text-white border-green-500 hover:bg-green-700">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Connected
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    Plug Wallet
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="font-mono text-xs">{walletInfo.principal}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <Coins className="h-4 w-4" />
+                    <span>Balance: {walletInfo.balance || '0.0'} ICP</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleDisconnect} className="flex items-center gap-2 text-red-600">
+                    <LogOut className="h-4 w-4" />
+                    Disconnect
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Principal: {walletInfo.principal}</p>
+              <p>Account: {walletInfo.accountId}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     }
 
@@ -252,10 +272,24 @@ export default function WalletConnection({ className, variant = 'default' }: Wal
   if (walletInfo?.isConnected) {
     return (
       <div className={`flex items-center space-x-3 ${className || ''}`}>
-        <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Connected
-        </Badge>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="bg-green-600 text-white border-green-500 hover:bg-green-700"
+                disabled
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Connected
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Principal: {walletInfo.principal}</p>
+              <p>Account: {walletInfo.accountId}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <div className="flex items-center space-x-2">
           <Wallet className="h-4 w-4 text-green-600" />
           <span className="text-sm font-medium text-white">
