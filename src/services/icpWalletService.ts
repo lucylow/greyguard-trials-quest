@@ -25,19 +25,49 @@ class PlugWalletService implements ICPWalletService {
         return null;
       }
 
-      // Request connection to Plug wallet
+      // Check if already connected first
+      const isConnected = await (window as any).ic?.plug?.isConnected();
+      if (isConnected) {
+        console.log('Already connected to Plug wallet');
+        return await this.getWalletInfo();
+      }
+
+      // Request connection to Plug wallet with proper parameters
+      console.log('Requesting connection to Plug wallet...');
       const connected = await (window as any).ic?.plug?.requestConnect({
         whitelist: [], // Allow all canisters
         host: 'https://mainnet.dfinity.network'
       });
 
+      console.log('Connection response:', connected);
+
       if (connected) {
+        // Wait a bit for the connection to stabilize
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Verify connection status
+        const connectionStatus = await (window as any).ic?.plug?.isConnected();
+        console.log('Connection status after connect:', connectionStatus);
+        
+        if (!connectionStatus) {
+          console.error('Connection failed - not connected after request');
+          return null;
+        }
+
         // Get wallet information
         const principal = await (window as any).ic?.plug?.getPrincipal();
         const accountId = await (window as any).ic?.plug?.getAccountId();
         
+        console.log('Principal:', principal);
+        console.log('Account ID:', accountId);
+        
+        if (!principal) {
+          console.error('Failed to get principal from Plug wallet');
+          return null;
+        }
+        
         this.walletInfo = {
-          principal: principal?.toString() || '',
+          principal: principal.toString(),
           accountId: accountId || '',
           isConnected: true,
           walletName: 'Plug Wallet'
@@ -46,9 +76,11 @@ class PlugWalletService implements ICPWalletService {
         // Listen for wallet events
         this.setupEventListeners();
         
+        console.log('Successfully connected to Plug wallet:', this.walletInfo);
         return this.walletInfo;
       }
       
+      console.log('Connection request returned false');
       return null;
     } catch (error) {
       console.error('Failed to connect to Plug wallet:', error);
