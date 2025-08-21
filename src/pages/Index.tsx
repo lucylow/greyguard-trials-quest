@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Lock, Shield, Database, Globe } from 'lucide-react';
 import { HomePage } from '../components/HomePage';
 import { ClinicalTrialsPage } from '../components/ClinicalTrialsPage';
 import { DecentralizedFeaturesPage } from '../components/DecentralizedFeaturesPage';
@@ -11,6 +12,7 @@ import { AgentPlatformPage } from '../components/AgentPlatformPage';
 import DemoConversationInterface from '../components/DemoConversationInterface';
 import PricingPage from '../components/PricingPage';
 import LanguageSelector from '../components/LanguageSelector';
+import WalletConnection from '../components/WalletConnection';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -94,17 +96,38 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-grey-800 text-grey-900 shadow-lg">
+      <header className="bg-slate-900 text-white shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
               <div className="text-center sm:text-left">
-                <h1 className="text-xl sm:text-2xl font-bold">GreyGuard Trials</h1>
-                <p className="text-xs sm:text-sm opacity-90">Decentralized Clinical Trial Matching</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-white">GreyGuard Trials</h1>
+                <p className="text-xs sm:text-sm text-white opacity-90">Decentralized Clinical Trial Matching</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <LanguageSelector variant="compact" />
+              <WalletConnection variant="compact" />
+            </div>
+          </div>
+          
+          {/* ICP Blockchain Indicators */}
+          <div className="flex items-center justify-center space-x-6 mt-3 pt-3 border-t border-slate-700">
+            <div className="flex items-center space-x-2 text-white">
+              <Lock className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">Privacy Status</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Shield className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">ZK Proofs</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Database className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">ICP Anchored</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Globe className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">Decentralized</span>
             </div>
           </div>
         </div>

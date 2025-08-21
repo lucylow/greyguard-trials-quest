@@ -9,13 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { 
-  Cloud, 
-  CloudRain, 
-  Sun, 
-  Wind, 
-  Thermometer, 
-  MapPin,
-  Calendar,
   Activity,
   Settings,
   Play,
@@ -39,8 +32,7 @@ import {
   Globe,
   Layers,
   TrendingUp,
-  AlertTriangle,
-  Droplets
+  AlertTriangle
 } from 'lucide-react';
 import MCPServer from '../services/mcpServer';
 import MCPAgent from '../services/mcpAgent';
@@ -54,17 +46,12 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
   const [mcpAgent] = useState(() => MCPAgent.getInstance());
   
   // System State
-  const [activeTab, setActiveTab] = useState('weather');
+  const [activeTab, setActiveTab] = useState('tools');
   const [serverStatus, setServerStatus] = useState<'healthy' | 'degraded' | 'unhealthy'>('healthy');
   const [agentStatus, setAgentStatus] = useState<any>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   
-  // Weather State
-  const [weatherLocation, setWeatherLocation] = useState('');
-  const [weatherState, setWeatherState] = useState('CA');
-  const [weatherCoordinates, setWeatherCoordinates] = useState({ lat: 37.7749, lng: -122.4194 });
-  const [weatherResults, setWeatherResults] = useState<any>(null);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+
   
   // Tool Execution State
   const [selectedTool, setSelectedTool] = useState('');
@@ -144,136 +131,7 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
     }
   };
 
-  // Weather Functions
-  const handleGetWeatherAlerts = async () => {
-    if (!weatherState.trim()) {
-      toast({
-        title: "Missing State",
-        description: "Please enter a state code",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    try {
-      setIsLoadingWeather(true);
-      
-      const response = await mcpAgent.getWeatherAlerts(weatherState, currentSessionId);
-      
-      if (response.success) {
-        setWeatherResults({
-          type: 'alerts',
-          data: response.result,
-          timestamp: response.metadata.timestamp
-        });
-        
-        toast({
-          title: "Weather Alerts Retrieved",
-          description: `Found ${response.result.length} active alerts for ${weatherState}`,
-        });
-      } else {
-        toast({
-          title: "Weather Alerts Failed",
-          description: response.error || "Failed to retrieve weather alerts",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Weather alerts error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to retrieve weather alerts",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingWeather(false);
-    }
-  };
-
-  const handleGetWeatherForecast = async () => {
-    try {
-      setIsLoadingWeather(true);
-      
-      const response = await mcpAgent.getWeatherForecast(
-        weatherCoordinates.lat,
-        weatherCoordinates.lng,
-        currentSessionId
-      );
-      
-      if (response.success) {
-        setWeatherResults({
-          type: 'forecast',
-          data: response.result,
-          timestamp: response.metadata.timestamp
-        });
-        
-        toast({
-          title: "Weather Forecast Retrieved",
-          description: `Forecast for coordinates ${weatherCoordinates.lat}, ${weatherCoordinates.lng}`,
-        });
-      } else {
-        toast({
-          title: "Weather Forecast Failed",
-          description: response.error || "Failed to retrieve weather forecast",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Weather forecast error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to retrieve weather forecast",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingWeather(false);
-    }
-  };
-
-  const handleGetWeatherSummary = async () => {
-    if (!weatherLocation.trim()) {
-      toast({
-        title: "Missing Location",
-        description: "Please enter a location",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsLoadingWeather(true);
-      
-      const response = await mcpAgent.getWeatherSummary(weatherLocation, currentSessionId, true);
-      
-      if (response.success) {
-        setWeatherResults({
-          type: 'summary',
-          data: response.result,
-          timestamp: response.metadata.timestamp
-        });
-        
-        toast({
-          title: "Weather Summary Retrieved",
-          description: `Summary for ${weatherLocation}`,
-        });
-      } else {
-        toast({
-          title: "Weather Summary Failed",
-          description: response.error || "Failed to retrieve weather summary",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Weather summary error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to retrieve weather summary",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingWeather(false);
-    }
-  };
 
   // Tool Execution Functions
   const handleExecuteTool = async () => {
@@ -385,128 +243,7 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
     }
   };
 
-  const formatWeatherData = (data: any, type: string) => {
-    switch (type) {
-      case 'alerts':
-        return data.map((alert: any, index: number) => (
-          <Card key={index} className="mb-4">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{alert.event}</CardTitle>
-                <Badge variant={alert.severity === 'Severe' ? 'destructive' : 'default'}>
-                  {alert.severity}
-                </Badge>
-              </div>
-              <CardDescription>{alert.areaDesc}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Effective:</span> {alert.effective}
-                </div>
-                <div>
-                  <span className="font-medium">Expires:</span> {alert.expires}
-                </div>
-              </div>
-              <div>
-                <span className="font-medium">Description:</span>
-                <p className="mt-1 text-sm text-muted-foreground">{alert.description}</p>
-              </div>
-              {alert.instructions && (
-                <div>
-                  <span className="font-medium">Instructions:</span>
-                  <p className="mt-1 text-sm text-muted-foreground">{alert.instructions}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ));
-      
-      case 'forecast':
-        return data.map((period: any, index: number) => (
-          <Card key={index} className="mb-4">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">{period.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Thermometer className="h-4 w-4 text-red-500" />
-                  <span>{period.temperature}°{period.temperatureUnit}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Wind className="h-4 w-4 text-grey-500" />
-                  <span>{period.windSpeed} {period.windDirection}</span>
-                </div>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">{period.detailedForecast}</p>
-            </CardContent>
-          </Card>
-        ));
-      
-      case 'summary':
-        return (
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5" />
-                  <span>Current Conditions - {data.location}</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Thermometer className="h-5 w-5 text-red-500" />
-                    <span>{data.current.temperature}°F</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Cloud className="h-5 w-5 text-gray-500" />
-                    <span>{data.current.condition}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Wind className="h-5 w-5 text-grey-500" />
-                    <span>{data.current.windSpeed} mph {data.current.windDirection}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Droplets className="h-5 w-5 text-grey-500" />
-                    <span>{data.current.humidity}% humidity</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {data.forecast && data.forecast.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>5-Day Forecast</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {formatWeatherData(data.forecast, 'forecast')}
-                </CardContent>
-              </Card>
-            )}
-            
-            {data.alerts && data.alerts.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <AlertTriangle className="h-5 w-5 text-yellow-500" />
-                    <span>Active Alerts</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {formatWeatherData(data.alerts, 'alerts')}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        );
-      
-      default:
-        return <pre className="text-sm">{JSON.stringify(data, null, 2)}</pre>;
-    }
-  };
+
 
   return (
     <div className={`space-y-6 ${className || ''}`}>
@@ -515,7 +252,7 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
         <div>
           <h2 className="text-2xl font-bold">MCP System</h2>
           <p className="text-muted-foreground">
-            Model Context Protocol server with weather data and tool execution
+            Model Context Protocol server with tool execution and monitoring
           </p>
         </div>
         <div className="flex items-center space-x-4">
@@ -541,183 +278,13 @@ const MCPSystem: React.FC<MCPSystemProps> = ({ className }) => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="weather">Weather Data</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tools">Tool Execution</TabsTrigger>
           <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
         </TabsList>
 
-        {/* Weather Data Tab */}
-        <TabsContent value="weather" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Weather Controls */}
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Cloud className="h-5 w-5 text-primary" />
-                    <span>Weather Services</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Access real-time weather data and forecasts
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Weather Alerts */}
-                  <div className="space-y-2">
-                    <Label htmlFor="state">Weather Alerts by State</Label>
-                    <div className="flex space-x-2">
-                      <Input
-                        id="state"
-                        placeholder="State code (e.g., CA)"
-                        value={weatherState}
-                        onChange={(e) => setWeatherState(e.target.value.toUpperCase())}
-                        maxLength={2}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={handleGetWeatherAlerts}
-                        disabled={isLoadingWeather}
-                        size="sm"
-                      >
-                        {isLoadingWeather ? (
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <AlertTriangle className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
 
-                  {/* Weather Forecast */}
-                  <div className="space-y-2">
-                    <Label>Weather Forecast by Coordinates</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        placeholder="Latitude"
-                        type="number"
-                        value={weatherCoordinates.lat}
-                        onChange={(e) => setWeatherCoordinates(prev => ({ ...prev, lat: parseFloat(e.target.value) || 0 }))}
-                        step="any"
-                      />
-                      <Input
-                        placeholder="Longitude"
-                        type="number"
-                        value={weatherCoordinates.lng}
-                        onChange={(e) => setWeatherCoordinates(prev => ({ ...prev, lng: parseFloat(e.target.value) || 0 }))}
-                        step="any"
-                      />
-                    </div>
-                    <Button
-                      onClick={handleGetWeatherForecast}
-                      disabled={isLoadingWeather}
-                      className="w-full"
-                      size="sm"
-                    >
-                      {isLoadingWeather ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Sun className="h-4 w-4" />
-                      )}
-                      Get Forecast
-                    </Button>
-                  </div>
-
-                  {/* Weather Summary */}
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Weather Summary by Location</Label>
-                    <div className="flex space-x-2">
-                      <Input
-                        id="location"
-                        placeholder="City, ZIP, or coordinates"
-                        value={weatherLocation}
-                        onChange={(e) => setWeatherLocation(e.target.value)}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={handleGetWeatherSummary}
-                        disabled={isLoadingWeather}
-                        size="sm"
-                      >
-                        {isLoadingWeather ? (
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Globe className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* System Status */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Activity className="h-4 w-4" />
-                    <span>System Status</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium">MCP Server</span>
-                    <Badge variant={serverStatus === 'healthy' ? 'default' : 'secondary'}>
-                      {serverStatus}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium">MCP Agent</span>
-                    <Badge variant={agentStatus?.isOnline ? 'default' : 'secondary'}>
-                      {agentStatus?.isOnline ? 'Online' : 'Offline'}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium">Active Sessions</span>
-                    <span className="text-sm text-muted-foreground">
-                      {agentStatus?.activeSessions || 0}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Weather Results */}
-            <div className="space-y-4">
-              <Card className="min-h-[400px] flex flex-col">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Cloud className="h-5 w-5 text-primary" />
-                    <span>Weather Results</span>
-                    {weatherResults && (
-                      <Badge variant="outline" className="text-xs">
-                        {weatherResults.type}
-                      </Badge>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col">
-                  {weatherResults ? (
-                    <div className="space-y-4">
-                      <div className="text-xs text-muted-foreground">
-                        Retrieved: {new Date(weatherResults.timestamp).toLocaleString()}
-                      </div>
-                      {formatWeatherData(weatherResults.data, weatherResults.type)}
-                    </div>
-                  ) : (
-                    <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
-                      <div>
-                        <Cloud className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                        <p>No weather data yet</p>
-                        <p className="text-sm">Use the controls to retrieve weather information</p>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
 
         {/* Tool Execution Tab */}
         <TabsContent value="tools" className="space-y-6">
