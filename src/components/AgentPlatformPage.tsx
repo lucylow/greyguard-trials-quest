@@ -20,6 +20,7 @@ import {
 const AgentIntegration = React.lazy(() => import('./AgentIntegration'));
 const PromptManager = React.lazy(() => import('./PromptManager'));
 const ASIProtocol = React.lazy(() => import('./ASIProtocol'));
+const ImageAgents = React.lazy(() => import('./ImageAgents'));
 
 // Error Boundary Component
 const ErrorBoundary: React.FC<{ children: React.ReactNode; fallback: React.ReactNode }> = ({ children, fallback }) => {
@@ -89,10 +90,11 @@ export const AgentPlatformPage: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="ai-agent">AI Agent</TabsTrigger>
           <TabsTrigger value="prompts">Prompts</TabsTrigger>
           <TabsTrigger value="asi-protocol">ASI Protocol</TabsTrigger>
+          <TabsTrigger value="ai-images">AI Images</TabsTrigger>
         </TabsList>
 
         {/* AI Agent Tab */}
@@ -248,6 +250,60 @@ export const AgentPlatformPage: React.FC = () => {
           }>
             <Suspense fallback={<LoadingFallback />}>
               <ASIProtocol />
+            </Suspense>
+          </ErrorBoundary>
+        </TabsContent>
+
+        {/* AI Images Tab */}
+        <TabsContent value="ai-images" className="space-y-6">
+          {/* AI Images Overview Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                AI Image Generation & Analysis
+              </CardTitle>
+              <CardDescription>
+                Create and analyze medical images using cutting-edge AI technology
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">DALL-E 3 Integration</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Code className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium">Claude 3.5 Analysis</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Medical Image Support</span>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">🎨 AI Image Features:</h4>
+                <ul className="text-sm space-y-1 text-blue-700">
+                  <li>• Generate medical illustrations and diagrams</li>
+                  <li>• Analyze uploaded medical images</li>
+                  <li>• Create visual aids for clinical trials</li>
+                  <li>• Support for various image formats</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ImageAgents Component */}
+          <ErrorBoundary fallback={
+            <ErrorFallback 
+              title="AI Image Tools" 
+              description="AI image generation and analysis tools are being optimized."
+            />
+          }>
+            <Suspense fallback={<LoadingFallback />}>
+              <ImageAgents />
             </Suspense>
           </ErrorBoundary>
         </TabsContent>
