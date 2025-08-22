@@ -35,8 +35,8 @@ class PlugWalletService implements ICPWalletService {
       // Request connection to Plug wallet with proper parameters
       console.log('Requesting connection to Plug wallet...');
       const connected = await (window as any).ic?.plug?.requestConnect({
-        whitelist: [], // Allow all canisters
-        host: 'https://mainnet.dfinity.network'
+        whitelist: [],
+        host: 'https://icp0.io'
       });
 
       console.log('Connection response:', connected);
@@ -204,5 +204,3 @@ class PlugWalletService implements ICPWalletService {
 // Create and export a singleton instance
 export const icpWalletService = new PlugWalletService();
 
-// Export the interface for type checking
-export type { ICPWalletInfo };

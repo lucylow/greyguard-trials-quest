@@ -139,7 +139,9 @@ export default function WalletConnection({ className, variant = 'default' }: Wal
       // Check connection status
       const isConnected = await (window as any).ic?.plug?.isConnected();
       if (isConnected) {
-        return "Wallet appears to be connected but connection failed. Please try disconnecting and reconnecting.";
+        // Try to disconnect and reconnect automatically
+        await (window as any).ic?.plug?.disconnect();
+        return "Auto-disconnected. Please click 'Connect Wallet' again.";
       }
 
       // Check if user rejected the connection
