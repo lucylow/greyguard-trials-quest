@@ -38,13 +38,15 @@ interface LandingPageProps {
   onConnectWallet: () => void;
   onLaunchApp: () => void;
   isConnecting: boolean;
+  onWalletConnected: (walletInfo: any) => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLaunchApp, isConnecting }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLaunchApp, isConnecting, onWalletConnected }) => {
   console.log('LandingPage component rendered!'); // Debug log
   
   const [showWalletSelector, setShowWalletSelector] = useState(false);
   const [wallets, setWallets] = useState<ICPWallet[]>([]);
+  const [connectingWalletId, setConnectingWalletId] = useState<string | null>(null);
 
   // Get supported wallets when component mounts
   React.useEffect(() => {
@@ -56,19 +58,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
     console.log('Selected wallet:', walletId);
     
     try {
+      setConnectingWalletId(walletId);
+      console.log('Attempting to connect to wallet:', walletId);
       const result = await multiWalletService.connectWallet(walletId);
+      console.log('Connection result:', result);
       
       if (result.success && result.walletInfo) {
         console.log('Wallet connected successfully:', result.walletInfo);
         setShowWalletSelector(false);
-        // Call the parent's onConnectWallet to update the app state
-        onConnectWallet();
+        setConnectingWalletId(null);
+        // Call the parent's onWalletConnected to update the app state
+        onWalletConnected(result.walletInfo);
       } else {
         console.error('Wallet connection failed:', result.error);
-        // You could show an error toast here
+        setConnectingWalletId(null);
+        // Show error to user
+        alert(`Wallet connection failed: ${result.error}`);
       }
     } catch (error) {
       console.error('Error connecting wallet:', error);
+      setConnectingWalletId(null);
+      alert(`Error connecting wallet: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -468,6 +478,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
         onSelectWallet={handleWalletSelect}
         wallets={wallets}
         isConnecting={isConnecting}
+        connectingWalletId={connectingWalletId}
       />
 
       {/* Debug Component - Remove in production */}

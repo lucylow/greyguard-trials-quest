@@ -30,6 +30,7 @@ interface WalletSelectorProps {
   onSelectWallet: (walletId: string) => void;
   wallets: ICPWallet[];
   isConnecting: boolean;
+  connectingWalletId?: string | null;
 }
 
 export const WalletSelector: React.FC<WalletSelectorProps> = ({
@@ -37,7 +38,8 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
   onClose,
   onSelectWallet,
   wallets,
-  isConnecting
+  isConnecting,
+  connectingWalletId
 }) => {
   const handleWalletSelect = (walletId: string) => {
     onSelectWallet(walletId);
@@ -61,74 +63,87 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
         </DialogHeader>
         
         <div className="space-y-3">
-          {wallets.map((wallet) => (
-            <div
-              key={wallet.id}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                wallet.isConnected
-                  ? 'border-green-500 bg-green-50'
-                  : wallet.isInstalled
-                  ? 'border-orange-200 bg-orange-50 hover:border-orange-400 hover:bg-orange-100'
-                  : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
-              }`}
-              onClick={() => !isConnecting && handleWalletSelect(wallet.id)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-                    <img 
-                      src={wallet.icon} 
-                      alt={wallet.name}
-                      className="w-6 h-6"
-                      onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                        const target = e.currentTarget;
-                        target.style.display = 'none';
-                        const nextElement = target.nextElementSibling as HTMLElement;
-                        if (nextElement) {
-                          nextElement.classList.remove('hidden');
-                        }
-                      }}
-                    />
-                    <Wallet className="w-6 h-6 text-white hidden" />
+          {wallets.map((wallet) => {
+            const isConnectingThisWallet = connectingWalletId === wallet.id;
+            const isDisabled = isConnecting || isConnectingThisWallet;
+            
+            return (
+              <div
+                key={wallet.id}
+                className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                  wallet.isConnected
+                    ? 'border-green-500 bg-green-50'
+                    : wallet.isInstalled
+                    ? 'border-orange-200 bg-orange-50 hover:border-orange-400 hover:bg-orange-100'
+                    : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
+                } ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => !isDisabled && handleWalletSelect(wallet.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                      <img 
+                        src={wallet.icon} 
+                        alt={wallet.name}
+                        className="w-6 h-6"
+                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                          const target = e.currentTarget;
+                          target.style.display = 'none';
+                          const nextElement = target.nextElementSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.classList.remove('hidden');
+                          }
+                        }}
+                      />
+                      <Wallet className="w-6 h-6 text-white hidden" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{wallet.name}</h3>
+                      <p className="text-sm text-gray-600">{wallet.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{wallet.name}</h3>
-                    <p className="text-sm text-gray-600">{wallet.description}</p>
+                  
+                  <div className="flex items-center space-x-2">
+                    {wallet.isConnected && (
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    )}
+                    {!wallet.isInstalled && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e: React.MouseEvent) => {
+                          e.stopPropagation();
+                          handleInstallWallet(wallet.url);
+                        }}
+                        className="text-xs"
+                        disabled={isDisabled}
+                      >
+                        <Download className="h-3 w-3 mr-1" />
+                        Install
+                      </Button>
+                    )}
+                    {wallet.isInstalled && !wallet.isConnected && (
+                      <Button
+                        size="sm"
+                        variant="default"
+                        disabled={isDisabled}
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                      >
+                        {isConnectingThisWallet ? (
+                          <>
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1"></div>
+                            Connecting...
+                          </>
+                        ) : (
+                          'Connect'
+                        )}
+                      </Button>
+                    )}
                   </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  {wallet.isConnected && (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                  )}
-                  {!wallet.isInstalled && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        handleInstallWallet(wallet.url);
-                      }}
-                      className="text-xs"
-                    >
-                      <Download className="h-3 w-3 mr-1" />
-                      Install
-                    </Button>
-                  )}
-                  {wallet.isInstalled && !wallet.isConnected && (
-                    <Button
-                      size="sm"
-                      variant="default"
-                      disabled={isConnecting}
-                      className="bg-orange-500 hover:bg-orange-600 text-white text-xs"
-                    >
-                      {isConnecting ? 'Connecting...' : 'Connect'}
-                    </Button>
-                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
