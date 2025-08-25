@@ -9,6 +9,8 @@ const Index = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
 
+  console.log('Index component rendered, showLanding:', showLanding, 'walletInfo:', walletInfo); // Debug log
+
   useEffect(() => {
     // Check if wallet is already connected on component mount
     checkWalletConnection();
