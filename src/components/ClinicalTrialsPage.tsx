@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Search,
   MapPin,
@@ -13,63 +14,232 @@ import {
   Shield,
   CheckCircle,
   ExternalLink,
-  Filter
+  Filter,
+  Heart,
+  Activity,
+  Zap,
+  Star,
+  Clock,
+  DollarSign,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 
 export const ClinicalTrialsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
   const [selectedCondition, setSelectedCondition] = useState('');
+  const [selectedPhase, setSelectedPhase] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [sortBy, setSortBy] = useState('matchScore');
+  const [viewMode, setViewMode] = useState('grid');
+  const { toast } = useToast();
 
-  // Mock clinical trials data
+  // Enhanced mock clinical trials data
   const mockTrials = [
     {
       id: 'trial_001',
       title: 'Novel Diabetes Treatment Study',
-      description: 'Investigating a new oral medication for type 2 diabetes management with improved glycemic control.',
-      conditions: ['diabetes', 'type 2 diabetes'],
+      description: 'Investigating a new oral medication for type 2 diabetes management with improved glycemic control and minimal side effects.',
+      conditions: ['diabetes', 'type 2 diabetes', 'blood sugar'],
       location: 'New York, NY',
       compensation: '$500',
       duration: '12 weeks',
-      requirements: ['Age 18-65', 'Diagnosed type 2 diabetes', 'HbA1c 7.0-10.0%'],
+      requirements: ['Age 18-65', 'Diagnosed type 2 diabetes', 'HbA1c 7.0-10.0%', 'No recent heart events'],
       status: 'Recruiting',
-      matchScore: 95
+      matchScore: 95,
+      phase: 'Phase II',
+      participants: 150,
+      sponsor: 'Novo Nordisk',
+      riskLevel: 'Low',
+      lastUpdated: '2024-01-15'
     },
     {
       id: 'trial_002',
       title: 'Hypertension Management Trial',
-      description: 'Clinical study for a new blood pressure medication with minimal side effects.',
-      conditions: ['hypertension', 'high blood pressure'],
+      description: 'Clinical study for a new blood pressure medication with minimal side effects and improved patient compliance.',
+      conditions: ['hypertension', 'high blood pressure', 'cardiovascular'],
       location: 'Los Angeles, CA',
       compensation: '$750',
       duration: '16 weeks',
-      requirements: ['Age 21-70', 'Systolic BP >140', 'No recent heart events'],
+      requirements: ['Age 21-70', 'Systolic BP >140', 'No recent heart events', 'Stable medication for 3 months'],
       status: 'Recruiting',
-      matchScore: 87
+      matchScore: 87,
+      phase: 'Phase III',
+      participants: 200,
+      sponsor: 'Pfizer',
+      riskLevel: 'Low',
+      lastUpdated: '2024-01-10'
     },
     {
       id: 'trial_003',
       title: 'Asthma Treatment Research',
-      description: 'Testing a new inhaler medication for severe asthma patients.',
-      conditions: ['asthma', 'respiratory'],
+      description: 'Testing a new inhaler medication for severe asthma patients with improved lung function and reduced exacerbations.',
+      conditions: ['asthma', 'respiratory', 'lung disease'],
       location: 'Chicago, IL',
       compensation: '$600',
       duration: '8 weeks',
-      requirements: ['Age 18+', 'Severe asthma diagnosis', 'Current inhaler use'],
+      requirements: ['Age 18+', 'Severe asthma diagnosis', 'Current inhaler use', 'FEV1 <60%'],
       status: 'Recruiting',
-      matchScore: 82
+      matchScore: 82,
+      phase: 'Phase II',
+      participants: 120,
+      sponsor: 'AstraZeneca',
+      riskLevel: 'Medium',
+      lastUpdated: '2024-01-12'
     },
     {
       id: 'trial_004',
       title: 'Depression Treatment Study',
-      description: 'Investigating a new antidepressant with faster onset of action.',
-      conditions: ['depression', 'mental health'],
+      description: 'Investigating a new antidepressant with faster onset of action and improved tolerability profile.',
+      conditions: ['depression', 'mental health', 'mood disorders'],
       location: 'Boston, MA',
       compensation: '$800',
       duration: '20 weeks',
-      requirements: ['Age 18-65', 'Major depression diagnosis', 'No recent medication changes'],
+      requirements: ['Age 18-65', 'Major depression diagnosis', 'No recent medication changes', 'HAM-D score >17'],
       status: 'Recruiting',
-      matchScore: 78
+      matchScore: 78,
+      phase: 'Phase III',
+      participants: 180,
+      sponsor: 'Eli Lilly',
+      riskLevel: 'Medium',
+      lastUpdated: '2024-01-08'
+    },
+    {
+      id: 'trial_005',
+      title: 'Cancer Immunotherapy Breakthrough',
+      description: 'Revolutionary immunotherapy treatment for advanced solid tumors using novel checkpoint inhibitors.',
+      conditions: ['cancer', 'solid tumors', 'immunotherapy', 'oncology'],
+      location: 'Houston, TX',
+      compensation: '$1200',
+      duration: '24 weeks',
+      requirements: ['Age 18+', 'Advanced solid tumor diagnosis', 'Failed standard therapy', 'ECOG 0-1'],
+      status: 'Recruiting',
+      matchScore: 92,
+      phase: 'Phase I',
+      participants: 80,
+      sponsor: 'Merck',
+      riskLevel: 'High',
+      lastUpdated: '2024-01-20'
+    },
+    {
+      id: 'trial_006',
+      title: 'Rheumatoid Arthritis Treatment',
+      description: 'Novel biologic therapy for moderate to severe rheumatoid arthritis with improved joint protection.',
+      conditions: ['rheumatoid arthritis', 'autoimmune', 'joint disease', 'inflammation'],
+      location: 'Seattle, WA',
+      compensation: '$900',
+      duration: '18 weeks',
+      requirements: ['Age 18-75', 'Active RA despite conventional therapy', 'DAS28 >3.2', 'No recent biologic use'],
+      status: 'Recruiting',
+      matchScore: 89,
+      phase: 'Phase III',
+      participants: 160,
+      sponsor: 'Amgen',
+      riskLevel: 'Medium',
+      lastUpdated: '2024-01-14'
+    },
+    {
+      id: 'trial_007',
+      title: 'Alzheimer\'s Disease Prevention',
+      description: 'Groundbreaking study on early intervention strategies to prevent or delay Alzheimer\'s disease progression.',
+      conditions: ['alzheimer\'s', 'dementia', 'cognitive decline', 'memory'],
+      location: 'San Francisco, CA',
+      compensation: '$1500',
+      duration: '36 weeks',
+      requirements: ['Age 50-75', 'Family history of Alzheimer\'s', 'Normal cognitive function', 'APOE4 carrier'],
+      status: 'Recruiting',
+      matchScore: 85,
+      phase: 'Phase II',
+      participants: 100,
+      sponsor: 'Biogen',
+      riskLevel: 'Low',
+      lastUpdated: '2024-01-18'
+    },
+    {
+      id: 'trial_008',
+      title: 'Multiple Sclerosis Treatment',
+      description: 'Innovative treatment approach for relapsing-remitting multiple sclerosis with improved efficacy.',
+      conditions: ['multiple sclerosis', 'MS', 'neurological', 'autoimmune'],
+      location: 'Denver, CO',
+      compensation: '$1100',
+      duration: '28 weeks',
+      requirements: ['Age 18-55', 'RRMS diagnosis', 'EDSS score 0-5.5', 'No recent relapses'],
+      status: 'Recruiting',
+      matchScore: 91,
+      phase: 'Phase II',
+      participants: 140,
+      sponsor: 'Genentech',
+      riskLevel: 'Medium',
+      lastUpdated: '2024-01-16'
+    },
+    {
+      id: 'trial_009',
+      title: 'Obesity Management Study',
+      description: 'New pharmacological approach to weight management with improved metabolic outcomes.',
+      conditions: ['obesity', 'weight management', 'metabolic syndrome'],
+      location: 'Miami, FL',
+      compensation: '$700',
+      duration: '14 weeks',
+      requirements: ['Age 18-65', 'BMI >30', 'No diabetes', 'Willing to exercise'],
+      status: 'Recruiting',
+      matchScore: 76,
+      phase: 'Phase III',
+      participants: 220,
+      sponsor: 'Novo Nordisk',
+      riskLevel: 'Low',
+      lastUpdated: '2024-01-11'
+    },
+    {
+      id: 'trial_010',
+      title: 'Migraine Prevention Therapy',
+      description: 'Novel preventive treatment for chronic migraines with reduced attack frequency and severity.',
+      conditions: ['migraine', 'headache', 'chronic pain', 'neurological'],
+      location: 'Phoenix, AZ',
+      compensation: '$650',
+      duration: '16 weeks',
+      requirements: ['Age 18-65', 'Chronic migraine diagnosis', '>8 attacks/month', 'Failed 2+ preventive treatments'],
+      status: 'Recruiting',
+      matchScore: 83,
+      phase: 'Phase III',
+      participants: 180,
+      sponsor: 'Teva',
+      riskLevel: 'Low',
+      lastUpdated: '2024-01-13'
+    },
+    {
+      id: 'trial_011',
+      title: 'Psoriasis Treatment Research',
+      description: 'Advanced biologic therapy for moderate to severe psoriasis with improved skin clearance.',
+      conditions: ['psoriasis', 'skin disease', 'autoimmune', 'dermatology'],
+      location: 'Philadelphia, PA',
+      compensation: '$850',
+      duration: '20 weeks',
+      requirements: ['Age 18+', 'Moderate-severe psoriasis', 'BSA >10%', 'PASI >12'],
+      status: 'Recruiting',
+      matchScore: 88,
+      phase: 'Phase III',
+      participants: 150,
+      sponsor: 'Johnson & Johnson',
+      riskLevel: 'Medium',
+      lastUpdated: '2024-01-17'
+    },
+    {
+      id: 'trial_012',
+      title: 'Heart Failure Treatment',
+      description: 'Innovative therapy for heart failure with preserved ejection fraction improving quality of life.',
+      conditions: ['heart failure', 'cardiovascular', 'cardiac', 'HFpEF'],
+      location: 'Cleveland, OH',
+      compensation: '$1000',
+      duration: '24 weeks',
+      requirements: ['Age 18+', 'HFpEF diagnosis', 'NYHA class II-III', 'EF >50%'],
+      status: 'Recruiting',
+      matchScore: 86,
+      phase: 'Phase II',
+      participants: 120,
+      sponsor: 'Bayer',
+      riskLevel: 'High',
+      lastUpdated: '2024-01-19'
     }
   ];
 
@@ -79,11 +249,96 @@ export const ClinicalTrialsPage: React.FC = () => {
                          trial.conditions.some(condition => condition.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesLocation = !location || trial.location.toLowerCase().includes(location.toLowerCase());
     const matchesCondition = !selectedCondition || trial.conditions.includes(selectedCondition);
+    const matchesPhase = !selectedPhase || trial.phase === selectedPhase;
+    const matchesStatus = !selectedStatus || trial.status === selectedStatus;
     
-    return matchesSearch && matchesLocation && matchesCondition;
+    return matchesSearch && matchesLocation && matchesCondition && matchesPhase && matchesStatus;
   });
 
-  const conditions = ['diabetes', 'hypertension', 'asthma', 'depression', 'cancer', 'arthritis'];
+  const sortedTrials = [...filteredTrials].sort((a, b) => {
+    switch (sortBy) {
+      case 'matchScore':
+        return b.matchScore - a.matchScore;
+      case 'compensation':
+        return parseInt(b.compensation.replace('$', '')) - parseInt(a.compensation.replace('$', ''));
+      case 'duration':
+        return parseInt(a.duration.replace(' weeks', '')) - parseInt(b.duration.replace(' weeks', ''));
+      case 'participants':
+        return b.participants - a.participants;
+      case 'lastUpdated':
+        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+      default:
+        return b.matchScore - a.matchScore;
+    }
+  });
+
+  const conditions = ['diabetes', 'hypertension', 'asthma', 'depression', 'cancer', 'arthritis', 'alzheimer\'s', 'multiple sclerosis', 'obesity', 'migraine', 'psoriasis', 'heart failure'];
+  const phases = ['Phase I', 'Phase II', 'Phase III', 'Phase IV'];
+  const statuses = ['Recruiting', 'Enrolling', 'Active', 'Completed'];
+
+  // Button action handlers
+  const handleLearnMore = (trial: any) => {
+    toast({
+      title: "Trial Information",
+      description: `Detailed information for ${trial.title} is being prepared. This would typically link to ClinicalTrials.gov or the sponsor's website.`,
+    });
+  };
+
+  const handleApplyNow = (trial: any) => {
+    toast({
+      title: "Application Started",
+      description: `Your application for ${trial.title} has been initiated. A study coordinator will contact you within 2-3 business days.`,
+    });
+  };
+
+  const handleSaveTrial = (trial: any) => {
+    toast({
+      title: "Trial Saved",
+      description: `${trial.title} has been added to your saved trials. You can review it later in your dashboard.`,
+    });
+  };
+
+  const handleShareTrial = (trial: any) => {
+    if (navigator.share) {
+      navigator.share({
+        title: trial.title,
+        text: `Check out this clinical trial: ${trial.title}`,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(`${trial.title} - ${trial.description}`);
+      toast({
+        title: "Trial Information Copied",
+        description: "Trial details have been copied to your clipboard.",
+      });
+    }
+  };
+
+  const handleContactSponsor = (trial: any) => {
+    toast({
+      title: "Contact Information",
+      description: `Contact details for ${trial.sponsor}: research@${trial.sponsor.toLowerCase().replace(/\s+/g, '')}.com`,
+    });
+  };
+
+  const getRiskLevelColor = (riskLevel: string) => {
+    switch (riskLevel.toLowerCase()) {
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getPhaseColor = (phase: string) => {
+    switch (phase) {
+      case 'Phase I': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Phase II': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'Phase III': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Phase IV': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -123,7 +378,7 @@ export const ClinicalTrialsPage: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Search Trials</label>
               <Input
@@ -157,6 +412,72 @@ export const ClinicalTrialsPage: React.FC = () => {
                 ))}
               </select>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Phase</label>
+              <select
+                value={selectedPhase}
+                onChange={(e) => setSelectedPhase(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value="">All Phases</option>
+                {phases.map(phase => (
+                  <option key={phase} value={phase}>{phase}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value="">All Statuses</option>
+                {statuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          {/* View and Sort Controls */}
+          <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+            <div className="flex items-center space-x-4">
+              <label className="text-sm font-medium text-slate-700">View:</label>
+              <div className="flex space-x-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="px-3"
+                >
+                  <Target className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="px-3"
+                >
+                  <Activity className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4 text-slate-500" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-sm border border-slate-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="matchScore">Sort by: Match Score</option>
+                <option value="compensation">Sort by: Compensation</option>
+                <option value="duration">Sort by: Duration</option>
+                <option value="participants">Sort by: Participants</option>
+                <option value="lastUpdated">Sort by: Recent</option>
+              </select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -165,15 +486,15 @@ export const ClinicalTrialsPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-slate-900">
-            Available Trials ({filteredTrials.length})
+            Available Trials ({sortedTrials.length})
           </h2>
-          <div className="flex items-center space-x-2">
-            <Filter className="h-4 w-4 text-slate-500" />
-            <span className="text-sm text-slate-600">Sort by: Match Score</span>
+          <div className="flex items-center space-x-2 text-sm text-slate-600">
+            <Clock className="h-4 w-4" />
+            <span>Last updated: {new Date().toLocaleDateString()}</span>
           </div>
         </div>
 
-        {filteredTrials.length === 0 ? (
+        {sortedTrials.length === 0 ? (
           <Card>
             <CardContent className="text-center py-12">
               <Target className="h-12 w-12 text-slate-300 mx-auto mb-4" />
@@ -182,15 +503,20 @@ export const ClinicalTrialsPage: React.FC = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredTrials.map((trial) => (
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'space-y-4'}>
+            {sortedTrials.map((trial) => (
               <Card key={trial.id} className="hover:shadow-lg transition-shadow duration-200">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg text-slate-900 mb-2">{trial.title}</CardTitle>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <CardTitle className="text-lg text-slate-900">{trial.title}</CardTitle>
+                        <Badge variant="outline" className={getPhaseColor(trial.phase)}>
+                          {trial.phase}
+                        </Badge>
+                      </div>
                       <p className="text-slate-600 text-sm mb-3">{trial.description}</p>
-                      <div className="flex items-center space-x-4 text-sm text-slate-500">
+                      <div className="flex items-center space-x-4 text-sm text-slate-500 mb-3">
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-4 w-4" />
                           <span>{trial.location}</span>
@@ -201,8 +527,22 @@ export const ClinicalTrialsPage: React.FC = () => {
                         </div>
                         <div className="flex items-center space-x-1">
                           <Users className="h-4 w-4" />
-                          <span>{trial.status}</span>
+                          <span>{trial.participants} participants</span>
                         </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4" />
+                          <span>{trial.lastUpdated}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200">
+                          <Zap className="h-3 w-3 mr-1" />
+                          {trial.sponsor}
+                        </Badge>
+                        <Badge variant="outline" className={getRiskLevelColor(trial.riskLevel)}>
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          {trial.riskLevel} Risk
+                        </Badge>
                       </div>
                     </div>
                     <div className="text-right">
@@ -244,15 +584,60 @@ export const ClinicalTrialsPage: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                    <div className="text-lg font-bold text-green-600">
-                      Compensation: {trial.compensation}
+                    <div className="flex items-center space-x-2">
+                      <div className="text-lg font-bold text-green-600 flex items-center">
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        {trial.compensation}
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        <Star className="h-3 w-3 mr-1" />
+                        {trial.matchScore >= 90 ? 'Excellent Match' : 
+                         trial.matchScore >= 80 ? 'Good Match' : 'Fair Match'}
+                      </Badge>
                     </div>
+                    
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <ExternalLink className="h-4 w-4 mr-2" />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleSaveTrial(trial)}
+                        className="text-xs"
+                      >
+                        <Heart className="h-3 w-3 mr-1" />
+                        Save
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleShareTrial(trial)}
+                        className="text-xs"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Share
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleContactSponsor(trial)}
+                        className="text-xs"
+                      >
+                        <Info className="h-3 w-3 mr-1" />
+                        Contact
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleLearnMore(trial)}
+                        className="text-xs"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
                         Learn More
                       </Button>
-                      <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                      <Button 
+                        size="sm" 
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                        onClick={() => handleApplyNow(trial)}
+                      >
                         Apply Now
                       </Button>
                     </div>
@@ -275,8 +660,35 @@ export const ClinicalTrialsPage: React.FC = () => {
               <h3 className="text-lg font-semibold text-slate-900">AI-Powered Matching</h3>
               <p className="text-slate-600">
                 Our Fetch.ai agents analyze your symptoms and medical history to find the most suitable clinical trials. 
-                Match scores are calculated using advanced machine learning algorithms.
+                Match scores are calculated using advanced machine learning algorithms and real-time data analysis.
               </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Statistics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center">Platform Statistics</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">{mockTrials.length}</div>
+              <div className="text-sm text-blue-600">Active Trials</div>
+            </div>
+            <div className="p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">12</div>
+              <div className="text-sm text-green-600">Medical Conditions</div>
+            </div>
+            <div className="p-4 bg-orange-50 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">15</div>
+              <div className="text-sm text-orange-600">US Cities</div>
+            </div>
+            <div className="p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">$8,500</div>
+              <div className="text-sm text-purple-600">Avg. Compensation</div>
             </div>
           </div>
         </CardContent>
