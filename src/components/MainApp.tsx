@@ -6,15 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lock, Shield, Database, Globe, Wallet, LogOut, Home, Target, Brain, MessageSquare, TrendingUp, CheckCircle, Network, Bot } from 'lucide-react';
 import { HomePage } from './HomePage';
 import { ClinicalTrialsPage } from './ClinicalTrialsPage';
-import { DecentralizedFeaturesPage } from './DecentralizedFeaturesPage';
-import { ResourcesPage } from './ResourcesPage';
-import { AgentPlatformPage } from './AgentPlatformPage';
-import DemoConversationInterface from './DemoConversationInterface';
-import PricingPage from './PricingPage';
-import LanguageSelector from './LanguageSelector';
-import WalletConnection from './WalletConnection';
-import { ICPWalletInfo } from '../services/icpWalletService';
 import { FetchAgentShowcase } from './FetchAgentShowcase';
+import ChatPage from './ChatPage';
+import LanguageSelector from './LanguageSelector';
+import { ICPWalletInfo } from '../services/icpWalletService';
 
 interface MainAppProps {
   walletInfo: ICPWalletInfo;
@@ -23,82 +18,6 @@ interface MainAppProps {
 
 const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
   const [activeTab, setActiveTab] = useState('home');
-  
-  // Clinical Trials state
-  const [symptoms, setSymptoms] = useState('');
-  const [location, setLocation] = useState('');
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedTrial, setSelectedTrial] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]);
-  const chatContainerRef = useRef(null);
-
-  // ZKP Demo state
-  const [zkpForm, setZkpForm] = useState({
-    patientId: '',
-    encryptedProfile: '',
-    condition: '',
-    age: '',
-    location: ''
-  });
-  const [generatedProof, setGeneratedProof] = useState(null);
-  const [verifyPatientId, setVerifyPatientId] = useState('');
-  const [verificationResult, setVerificationResult] = useState(null);
-  const [zkpLoading, setZkpLoading] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', { symptoms, location });
-  };
-
-  const handleTrialSelect = (trial) => {
-    setSelectedTrial(trial);
-  };
-
-  // ZKP Demo functions
-  const generateZKProof = async () => {
-    if (!zkpForm.patientId || !zkpForm.condition) {
-      return;
-    }
-    setZkpLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const proof = {
-        proofId: `zk-proof-${Math.random().toString(16).substr(2, 6).toUpperCase()}`,
-        patientId: zkpForm.patientId,
-        timestamp: new Date().toISOString(),
-        btcAnchor: `${Math.random().toString(16).substr(2, 8)}...`,
-        status: 'verified'
-      };
-      setGeneratedProof(proof);
-    } catch (error) {
-      console.error('Error generating proof:', error);
-    } finally {
-      setZkpLoading(false);
-    }
-  };
-
-  const verifyZKProof = async () => {
-    if (!verifyPatientId) {
-      return;
-    }
-    setVerifyLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const isValid = generatedProof && generatedProof.patientId === verifyPatientId;
-      setVerificationResult({
-        valid: isValid,
-        message: isValid ? 
-          "✓ Proof valid. Patient eligibility confirmed without exposing health data" :
-          "✗ Proof not found or invalid"
-      });
-    } catch (error) {
-      console.error('Error verifying proof:', error);
-    } finally {
-      setVerifyLoading(false);
-    }
-  };
 
   const formatPrincipal = (principal: string) => {
     if (principal.length <= 10) return principal;
@@ -191,7 +110,7 @@ const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
       <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <div className="flex justify-center">
-            <TabsList className="grid w-full max-w-4xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 sm:gap-2 bg-slate-100/50 backdrop-blur-sm p-1 rounded-xl shadow-lg border border-slate-200/50">
+            <TabsList className="grid w-full max-w-4xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2 bg-slate-100/50 backdrop-blur-sm p-1 rounded-xl shadow-lg border border-slate-200/50">
               <TabsTrigger value="home" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
                 <Home className="h-4 w-4 mr-2 hidden sm:inline" /> Home
               </TabsTrigger>
@@ -223,40 +142,24 @@ const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
             <ClinicalTrialsPage />
           </TabsContent>
 
-          {/* Agent Platform Tab */}
-          <TabsContent value="agent-platform" className="space-y-6">
-            <AgentPlatformPage />
-          </TabsContent>
-
-          {/* Decentralized Features Tab */}
-          <TabsContent value="decentralized" className="space-y-6">
-            <DecentralizedFeaturesPage 
-              zkpForm={zkpForm}
-              setZkpForm={setZkpForm}
-              generatedProof={generatedProof}
-              verifyPatientId={verifyPatientId}
-              setVerifyPatientId={setVerifyPatientId}
-              verificationResult={verificationResult}
-              zkpLoading={zkpLoading}
-              verifyLoading={verifyLoading}
-              generateZKProof={generateZKProof}
-              verifyZKProof={verifyZKProof}
-            />
-          </TabsContent>
-
-          {/* Demo Conversations Tab */}
-          <TabsContent value="demo-conversations" className="space-y-6">
-            <DemoConversationInterface />
-          </TabsContent>
-
-          {/* Pricing Tab */}
-          <TabsContent value="pricing" className="space-y-6">
-            <PricingPage />
-          </TabsContent>
-
           {/* Fetch.ai Agent Showcase Tab */}
           <TabsContent value="fetch-agents" className="space-y-6">
             <FetchAgentShowcase />
+          </TabsContent>
+
+          {/* Chat Tab */}
+          <TabsContent value="chat" className="space-y-6">
+            <ChatPage />
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsPage />
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <SettingsPage />
           </TabsContent>
         </Tabs>
       </div>
