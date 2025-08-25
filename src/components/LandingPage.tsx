@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WalletSelector, ICPWallet } from './WalletSelector';
+import { WalletDebug } from './WalletDebug';
 import { multiWalletService } from '../services/multiWalletService';
 import { 
   Shield, 
@@ -468,6 +469,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
         wallets={wallets}
         isConnecting={isConnecting}
       />
+
+      {/* Debug Component - Remove in production */}
+      <WalletDebug />
     </div>
   );
 };
