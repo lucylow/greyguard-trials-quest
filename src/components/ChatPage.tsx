@@ -80,7 +80,8 @@ export default function ChatPage() {
   const chatModes = [
     { id: 'text', name: 'Text Chat', icon: MessageSquare },
     { id: 'voice', name: 'Voice Chat', icon: Mic },
-    { id: 'ai', name: 'AI Analysis', icon: Sparkles }
+    { id: 'ai', name: 'AI Analysis', icon: Sparkles },
+    { id: 'image', name: 'Image Analysis', icon: Eye }
   ];
 
   // Demo suggestions for users to try
@@ -276,14 +277,22 @@ export default function ChatPage() {
     });
   };
 
-  const getFileIcon = (file: File) => {
-    if (file.type.startsWith('image/')) return <FileImage className="h-4 w-4" />;
-    if (file.type.includes('pdf')) return <FileText className="h-4 w-4" />;
-    if (file.type.includes('word') || file.type.includes('document')) return <FileText className="h-4 w-4" />;
-    if (file.type.includes('spreadsheet') || file.type.includes('excel')) return <FileSpreadsheet className="h-4 w-4" />;
-    if (file.type.includes('video')) return <FileVideo className="h-4 w-4" />;
-    if (file.type.includes('audio')) return <FileAudio className="h-4 w-4" />;
-    return <File className="h-4 w-4" />;
+  const getFileIcon = (fileType: string) => {
+    if (fileType.startsWith('image/')) {
+      return <FileImage className="h-4 w-4 text-blue-500" />;
+    } else if (fileType.includes('pdf')) {
+      return <FileText className="h-4 w-4 text-red-500" />;
+    } else if (fileType.includes('word') || fileType.includes('document')) {
+      return <FileText className="h-4 w-4 text-blue-500" />;
+    } else if (fileType.includes('spreadsheet') || fileType.includes('excel')) {
+      return <FileSpreadsheet className="h-4 w-4 text-green-500" />;
+    } else if (fileType.startsWith('video/')) {
+      return <FileVideo className="h-4 w-4 text-purple-500" />;
+    } else if (fileType.startsWith('audio/')) {
+      return <FileAudio className="h-4 w-4 text-orange-500" />;
+    } else {
+      return <File className="h-4 w-4 text-gray-500" />;
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -409,131 +418,178 @@ export default function ChatPage() {
       </Card>
 
       {/* Chat Interface */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Chat Modes */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Zap className="h-5 w-5" />
-              <span>Chat Modes</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {chatModes.map((mode) => {
-                const IconComponent = mode.icon;
-                return (
-                  <button
-                    key={mode.id}
-                    onClick={() => handleChatModeChange(mode.id)}
-                    className={`w-full p-3 rounded-lg border-2 transition-all duration-200 ${
-                      chatMode === mode.id
-                        ? 'border-purple-500 bg-purple-50'
-                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <IconComponent className={`h-5 w-5 ${
-                        chatMode === mode.id ? 'text-purple-500' : 'text-slate-500'
-                      }`} />
-                      <span className={`font-medium ${
-                        chatMode === mode.id ? 'text-purple-700' : 'text-slate-700'
-                      }`}>
-                        {mode.name}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <MessageSquare className="h-5 w-5 text-blue-600" />
+            <span>Chat Interface</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Chat Mode Selection */}
+          <div className="flex flex-wrap gap-2">
+            {chatModes.map((mode) => (
+              <Button
+                key={mode.id}
+                variant={chatMode === mode.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setChatMode(mode.id)}
+                className="flex items-center space-x-2"
+              >
+                <mode.icon className="h-4 w-4" />
+                <span>{mode.name}</span>
+              </Button>
+            ))}
+          </div>
 
-        {/* Main Chat Area */}
-        <div className="lg:col-span-2 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <MessageSquare className="h-5 w-5 text-green-500" />
-                  <span>Chat with {agents.find(a => a.id === selectedAgent)?.name}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="sm" onClick={clearChat}>
-                    Clear Chat
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                  </Button>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* Message History */}
-              <div className="h-64 overflow-y-auto border rounded-lg p-3 mb-4 bg-gray-50">
-                {messages.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
-                    <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No messages yet. Start a conversation!</p>
+          {/* Image Analysis Mode */}
+          {chatMode === 'image' && (
+            <div className="space-y-4">
+              <div className="text-center p-6 border-2 border-dashed border-blue-300 rounded-lg bg-blue-50">
+                <Eye className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">AI Image Analysis</h3>
+                <p className="text-gray-600 mb-4">
+                  Upload medical images for AI-powered analysis and diagnosis assistance
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="text-left">
+                    <h4 className="font-medium text-gray-900 mb-2">Supported Formats:</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• X-Ray images (PNG, JPG)</li>
+                      <li>• MRI scans (PNG, JPG)</li>
+                      <li>• CT scans (PNG, JPG)</li>
+                      <li>• Ultrasound images (PNG, JPG)</li>
+                      <li>• Pathology slides (PNG, JPG)</li>
+                    </ul>
                   </div>
-                ) : (
+                  <div className="text-left">
+                    <h4 className="font-medium text-gray-900 mb-2">Analysis Features:</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Automated abnormality detection</li>
+                      <li>• Medical condition classification</li>
+                      <li>• Confidence scoring</li>
+                      <li>• Clinical recommendations</li>
+                      <li>• Trial matching suggestions</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center space-x-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Select Medical Image
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setChatMode('text')}
+                    className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Switch to Text Chat
+                  </Button>
+                </div>
+              </div>
+
+              {/* Image Analysis Results */}
+              {uploadedFiles.length > 0 && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-medium text-green-900 mb-2">Image Analysis Results</h4>
                   <div className="space-y-3">
-                    {messages.map((msg) => (
-                      <div
-                        key={msg.id}
-                        className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-xs p-3 rounded-lg ${
-                            msg.type === 'user'
-                              ? 'bg-blue-500 text-white'
-                              : 'bg-white border border-gray-200'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-2 mb-1">
-                            {msg.type === 'user' ? (
-                              <User className="h-3 w-3" />
-                            ) : (
-                              <Bot className="h-3 w-3 text-orange-500" />
-                            )}
-                            <span className="text-xs font-medium">
-                              {msg.type === 'user' ? 'You' : agents.find(a => a.id === selectedAgent)?.name}
-                            </span>
-                            <span className="text-xs opacity-70">
-                              {msg.timestamp.toLocaleTimeString()}
-                            </span>
-                          </div>
-                          <p className="text-sm">{msg.content}</p>
-                          
-                          {/* Display uploaded files */}
-                          {msg.files && msg.files.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {msg.files.map((file, index) => (
-                                <div key={index} className="flex items-center space-x-2 text-xs bg-blue-100 p-2 rounded">
-                                  {getFileIcon(file)}
-                                  <span className="truncate">{file.name}</span>
-                                  <span className="text-gray-500">({formatFileSize(file.size)})</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          
-                          <Badge variant="outline" className="mt-2 text-xs">
-                            {msg.type === 'user' ? 'user' : 'ai'}
-                          </Badge>
+                    {uploadedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-green-200">
+                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                          <FileImage className="h-6 w-6 text-green-600" />
                         </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{file.name}</p>
+                          <p className="text-sm text-gray-500">
+                            {file.type.includes('image/') ? 'Medical Image' : 'Document'} • {formatFileSize(file.size)}
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeFile(index)}
+                          className="text-red-600 border-red-200 hover:bg-red-50"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                   </div>
-                )}
+                  
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-blue-800">
+                      <Brain className="h-4 w-4" />
+                      <span>
+                        <strong>AI Analysis Ready:</strong> Click "Send" to analyze your medical images and get personalized insights
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Regular Chat Interface for other modes */}
+          {chatMode !== 'image' && (
+            <>
+              {/* Messages Display */}
+              <div className="h-96 overflow-y-auto border rounded-lg p-4 bg-gray-50 space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        message.type === 'user'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-gray-900 border'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 mb-2">
+                        {message.type === 'user' ? (
+                          <User className="h-4 w-4" />
+                        ) : (
+                          <Bot className="h-4 w-4" />
+                        )}
+                        <span className="text-xs opacity-75">
+                          {message.timestamp.toLocaleTimeString()}
+                        </span>
+                      </div>
+                      
+                      <div className="whitespace-pre-wrap">{message.content}</div>
+                      
+                      {/* Display uploaded files in messages */}
+                      {message.files && message.files.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-xs opacity-75 mb-2">Attached files:</p>
+                          <div className="space-y-2">
+                            {message.files.map((file, fileIndex) => (
+                              <div key={fileIndex} className="flex items-center space-x-2 text-xs">
+                                {getFileIcon(file.type)}
+                                <span className="truncate">{file.name}</span>
+                                <span className="text-gray-500">({formatFileSize(file.size)})</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-white border border-gray-200 rounded-lg p-3">
+                    <div className="bg-white text-gray-900 border rounded-lg px-4 py-2">
                       <div className="flex items-center space-x-2">
-                        <Bot className="h-4 w-4 text-orange-500" />
-                        <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
-                        <span className="text-sm text-gray-600">AI is thinking...</span>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>AI is thinking...</span>
                       </div>
                     </div>
                   </div>
@@ -541,97 +597,58 @@ export default function ChatPage() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* File Upload Area */}
-              {uploadedFiles.length > 0 && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-blue-700">Files Ready to Send:</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setUploadedFiles([])}
-                      className="text-blue-600 hover:text-blue-700"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Clear All
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {uploadedFiles.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-white rounded border">
-                        <div className="flex items-center space-x-2">
-                          {getFileIcon(file)}
-                          <span className="text-sm font-medium">{file.name}</span>
-                          <span className="text-xs text-gray-500">({formatFileSize(file.size)})</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFile(index)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+              {/* Input Area */}
+              <div className="flex space-x-2">
+                <div className="flex-1">
+                  <Input
+                    placeholder={
+                      chatMode === 'voice' 
+                        ? "Click microphone to start recording..." 
+                        : "Type your message..."
+                    }
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    disabled={chatMode === 'voice'}
+                  />
+                </div>
+                
+                {chatMode === 'voice' ? (
+                  <Button
+                    onClick={() => setIsRecording(!isRecording)}
+                    variant={isRecording ? "destructive" : "default"}
+                    className="px-4"
+                  >
+                    {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                ) : (
+                  <Button onClick={handleSendMessage} disabled={isLoading || (!inputMessage.trim() && uploadedFiles.length === 0)}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+
+              {/* File Upload for non-image modes */}
+              {chatMode !== 'image' && (
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-gray-600"
+                  >
+                    <Paperclip className="h-4 w-4 mr-2" />
+                    Attach Files
+                  </Button>
+                  <span className="text-xs text-gray-500">
+                    Support for documents, images, and medical records
+                  </span>
                 </div>
               )}
-
-              {/* Input Area */}
-              <div className="flex items-center space-x-2">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-                  multiple
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading}
-                  className="text-blue-600 hover:text-blue-700"
-                >
-                  {isUploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Upload className="h-4 w-4 mr-2" />
-                  )}
-                  {isUploading ? 'Uploading...' : 'Upload Files'}
-                </Button>
-                
-                <Input
-                  placeholder="Type your message here..."
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  className="flex-1"
-                />
-                
-                <Button
-                  variant={isRecording ? 'destructive' : 'outline'}
-                  size="sm"
-                  onClick={handleVoiceToggle}
-                  disabled={chatMode !== 'voice'}
-                >
-                  {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                </Button>
-                
-                <Button 
-                  onClick={handleSendMessage} 
-                  disabled={(!inputMessage.trim() && uploadedFiles.length === 0) || isLoading}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Demo Suggestions */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">

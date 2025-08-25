@@ -70,26 +70,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
               <TrendingUp className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               View Analytics
             </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('zk-proofs')}
-            >
-              <Shield className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Zero Knowledge Proofs
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('image-classification')}
-            >
-              <Eye className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              AI Image Analysis
-            </Button>
           </div>
         </div>
       </div>
