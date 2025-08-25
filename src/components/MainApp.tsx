@@ -3,13 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Shield, Database, Globe, Wallet, LogOut, Home, Target, Brain, MessageSquare, TrendingUp, CheckCircle, Network, Bot } from 'lucide-react';
+import { Lock, Shield, Database, Globe, Wallet, LogOut, Home, Target, Brain, MessageSquare, TrendingUp, CheckCircle, Network, Bot, Eye, Zap } from 'lucide-react';
 import { HomePage } from './HomePage';
 import { ClinicalTrialsPage } from './ClinicalTrialsPage';
 import { FetchAgentShowcase } from './FetchAgentShowcase';
 import ChatPage from './ChatPage';
 import AnalyticsPage from './AnalyticsPage';
 import SettingsPage from './SettingsPage';
+import ZKProofsPage from './ZKProofsPage';
+import ImageClassificationPage from './ImageClassificationPage';
 import LanguageSelector from './LanguageSelector';
 import { ICPWalletInfo } from '../services/icpWalletService';
 
@@ -133,24 +135,30 @@ const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
         <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <div className="flex justify-center">
-              <TabsList className="grid w-full max-w-4xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2 bg-slate-100/50 backdrop-blur-sm p-1 rounded-xl shadow-lg border border-slate-200/50">
-                <TabsTrigger value="home" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <Home className="h-4 w-4 mr-2 hidden sm:inline" /> Home
+              <TabsList className="grid w-full max-w-6xl grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1 sm:gap-2 bg-slate-100/50 backdrop-blur-sm p-1 rounded-xl shadow-lg border border-slate-200/50">
+                <TabsTrigger value="home" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
+                  <Home className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Home
                 </TabsTrigger>
-                <TabsTrigger value="trials" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <Target className="h-4 w-4 mr-2 hidden sm:inline" /> Trials
+                <TabsTrigger value="trials" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
+                  <Target className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Trials
                 </TabsTrigger>
-                <TabsTrigger value="fetch-agents" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <Bot className="h-4 w-4 mr-2 hidden sm:inline" /> Fetch.ai
+                <TabsTrigger value="fetch-agents" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
+                  <Bot className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Fetch.ai
                 </TabsTrigger>
-                <TabsTrigger value="chat" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <MessageSquare className="h-4 w-4 mr-2 hidden sm:inline" /> Chat
+                <TabsTrigger value="chat" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
+                  <MessageSquare className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Chat
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <TrendingUp className="h-4 w-4 mr-2 hidden sm:inline" /> Analytics
+                <TabsTrigger value="zk-proofs" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-4 data-[state=active]:border-l-purple-500">
+                  <Shield className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> ZK Proofs
                 </TabsTrigger>
-                <TabsTrigger value="settings" className="text-xs sm:text-sm px-3 sm:px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-orange-500">
-                  <Lock className="h-4 w-4 mr-2 hidden sm:inline" /> Settings
+                <TabsTrigger value="image-classification" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-4 data-[state=active]:border-l-blue-500">
+                  <Eye className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> AI Vision
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-4 data-[state=active]:border-l-green-500">
+                  <TrendingUp className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Analytics
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="text-xs sm:text-sm px-2 sm:px-3 py-3 data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md transition-all duration-200 rounded-lg hover:bg-white/50 data-[state=active]:border-l-4 data-[state=active]:border-l-4 data-[state=active]:border-l-gray-500">
+                  <Lock className="h-3 w-3 mr-1 sm:mr-2 hidden sm:inline" /> Settings
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -180,6 +188,16 @@ const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
             {/* Chat Tab */}
             <TabsContent value="chat" className="space-y-6">
               <ChatPage />
+            </TabsContent>
+
+            {/* ZK Proofs Tab */}
+            <TabsContent value="zk-proofs" className="space-y-6">
+              <ZKProofsPage />
+            </TabsContent>
+
+            {/* Image Classification Tab */}
+            <TabsContent value="image-classification" className="space-y-6">
+              <ImageClassificationPage />
             </TabsContent>
 
             {/* Analytics Tab */}
