@@ -67,13 +67,28 @@ const Index = () => {
 
   // This function is called by the LandingPage when a wallet is successfully connected
   const handleWalletConnected = (walletInfo: any) => {
-    console.log('Wallet connected successfully in Index:', walletInfo);
+    console.log('=== WALLET CONNECTED CALLBACK IN INDEX ===');
+    console.log('Received walletInfo:', walletInfo);
+    console.log('Current state before update:');
+    console.log('- showLanding:', showLanding);
+    console.log('- walletInfo:', walletInfo);
+    console.log('- isConnecting:', isConnecting);
+    
+    console.log('Setting new walletInfo and showLanding to false...');
     setWalletInfo(walletInfo);
     setShowLanding(false);
+    
+    console.log('State after update:');
+    console.log('- showLanding should be false');
+    console.log('- walletInfo should be:', walletInfo);
+    
+    console.log('Showing success toast...');
     toast({
       title: "🎉 Wallet Connected Successfully!",
       description: `Welcome to GreyGuard Trials! You can now access the full application.`,
     });
+    
+    console.log('✅ handleWalletConnected completed successfully');
   };
 
   // This function is called by the LandingPage when wallet connection is requested

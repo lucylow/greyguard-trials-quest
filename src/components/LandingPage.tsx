@@ -55,31 +55,54 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
   }, []);
 
   const handleWalletSelect = async (walletId: string) => {
+    console.log('=== WALLET SELECTION START ===');
     console.log('Selected wallet:', walletId);
+    console.log('Current wallets state:', wallets);
+    console.log('Current connectingWalletId:', connectingWalletId);
     
     try {
       setConnectingWalletId(walletId);
-      console.log('Attempting to connect to wallet:', walletId);
+      console.log('Set connectingWalletId to:', walletId);
+      
+      console.log('About to call multiWalletService.connectWallet...');
       const result = await multiWalletService.connectWallet(walletId);
-      console.log('Connection result:', result);
+      console.log('=== CONNECTION RESULT ===');
+      console.log('Full result object:', result);
+      console.log('Result success:', result.success);
+      console.log('Result walletInfo:', result.walletInfo);
+      console.log('Result error:', result.error);
       
       if (result.success && result.walletInfo) {
-        console.log('Wallet connected successfully:', result.walletInfo);
+        console.log('✅ SUCCESS: Wallet connected successfully!');
+        console.log('Wallet info to pass to parent:', result.walletInfo);
         setShowWalletSelector(false);
         setConnectingWalletId(null);
-        // Call the parent's onWalletConnected to update the app state
+        
+        console.log('About to call onWalletConnected with:', result.walletInfo);
         onWalletConnected(result.walletInfo);
+        console.log('✅ onWalletConnected called successfully');
       } else {
-        console.error('Wallet connection failed:', result.error);
+        console.error('❌ FAILURE: Wallet connection failed');
+        console.error('Error details:', result.error);
         setConnectingWalletId(null);
-        // Show error to user
-        alert(`Wallet connection failed: ${result.error}`);
+        
+        const errorMessage = result.error || 'Unknown connection error';
+        console.log('Showing error alert:', errorMessage);
+        alert(`Wallet connection failed: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('Error connecting wallet:', error);
+      console.error('❌ EXCEPTION: Error in handleWalletSelect');
+      console.error('Error object:', error);
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+      
       setConnectingWalletId(null);
-      alert(`Error connecting wallet: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log('Showing error alert for exception:', errorMessage);
+      alert(`Error connecting wallet: ${errorMessage}`);
     }
+    
+    console.log('=== WALLET SELECTION END ===');
   };
 
   const handleConnectWalletClick = () => {

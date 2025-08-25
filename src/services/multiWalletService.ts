@@ -260,10 +260,11 @@ export class MultiWalletService {
 
   // Connect to Plug wallet - improved connection logic
   private async connectPlugWallet(): Promise<WalletConnectionResult> {
+    console.log('=== PLUG WALLET CONNECTION START ===');
     console.log('Attempting to connect to Plug wallet...');
     
     if (!this.isPlugInstalled()) {
-      console.log('Plug wallet not detected as installed');
+      console.log('❌ Plug wallet not detected as installed');
       return {
         success: false,
         error: 'Plug wallet is not installed. Please install it first.'
@@ -277,9 +278,15 @@ export class MultiWalletService {
                    (window as any).plug ||
                    (window as any).PlugWallet;
       
-      console.log('Found Plug wallet instance:', !!plug);
+      console.log('🔍 Plug wallet detection results:');
+      console.log('- window.ic?.plug:', !!(window as any).ic?.plug);
+      console.log('- window.ic?.plugWallet:', !!(window as any).ic?.plugWallet);
+      console.log('- window.plug:', !!(window as any).plug);
+      console.log('- window.PlugWallet:', !!(window as any).PlugWallet);
+      console.log('✅ Found Plug wallet instance:', !!plug);
       
       if (!plug) {
+        console.log('❌ Plug wallet found but not accessible');
         return {
           success: false,
           error: 'Plug wallet found but not accessible'
@@ -289,26 +296,31 @@ export class MultiWalletService {
       // Check if already connected
       let isConnected = false;
       try {
+        console.log('🔍 Checking if already connected...');
         if (typeof plug.isConnected === 'function') {
+          console.log('Using plug.isConnected() method');
           isConnected = await plug.isConnected();
         } else {
+          console.log('isConnected method not available, trying getPrincipal fallback');
           // Fallback: try to get principal to check connection
           const principal = await plug.getPrincipal();
           isConnected = !!principal;
         }
       } catch (error) {
-        console.log('Error checking connection status:', error);
+        console.log('⚠️ Error checking connection status:', error);
         isConnected = false;
       }
       
-      console.log('Plug wallet connection status:', isConnected);
+      console.log('📊 Plug wallet connection status:', isConnected);
       
       if (isConnected) {
         try {
+          console.log('🔄 Already connected, getting wallet info...');
           const principal = await plug.getPrincipal();
           const accountId = await plug.getAccountId?.() || '';
           
-          console.log('Already connected, got principal:', principal?.toString());
+          console.log('✅ Already connected, got principal:', principal?.toString());
+          console.log('Account ID:', accountId);
           
           return {
             success: true,
@@ -320,40 +332,48 @@ export class MultiWalletService {
             }
           };
         } catch (error) {
-          console.log('Error getting principal from connected wallet:', error);
+          console.log('⚠️ Error getting principal from connected wallet:', error);
+          console.log('Continuing to request connection...');
           // Continue to request connection
         }
       }
 
       // Request connection
-      console.log('Requesting connection to Plug wallet...');
+      console.log('🔌 Requesting connection to Plug wallet...');
       
       let connected = false;
       if (typeof plug.requestConnect === 'function') {
+        console.log('Using plug.requestConnect() method');
         connected = await plug.requestConnect({
           whitelist: [],
           host: 'https://mainnet.dfinity.network'
         });
       } else if (typeof plug.connect === 'function') {
+        console.log('Using plug.connect() method');
         connected = await plug.connect();
       } else {
+        console.log('❌ No connection method found');
         return {
           success: false,
           error: 'Plug wallet connection method not found'
         };
       }
 
-      console.log('Connection request result:', connected);
+      console.log('📊 Connection request result:', connected);
 
       if (connected) {
+        console.log('⏳ Connection successful, waiting for stabilization...');
         // Wait a bit for connection to stabilize
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         try {
+          console.log('🔍 Getting wallet info after connection...');
           const principal = await plug.getPrincipal();
           const accountId = await plug.getAccountId?.() || '';
           
-          console.log('Successfully connected, principal:', principal?.toString());
+          console.log('✅ Successfully connected!');
+          console.log('- Principal:', principal?.toString());
+          console.log('- Account ID:', accountId);
           
           this.currentWallet = 'plug';
           
@@ -367,7 +387,7 @@ export class MultiWalletService {
             }
           };
         } catch (error) {
-          console.error('Error getting principal after connection:', error);
+          console.error('❌ Error getting principal after connection:', error);
           return {
             success: false,
             error: 'Connected but failed to get wallet info'
@@ -375,16 +395,19 @@ export class MultiWalletService {
         }
       }
 
+      console.log('❌ Connection request failed');
       return {
         success: false,
         error: 'Failed to connect to Plug wallet'
       };
     } catch (error) {
-      console.error('Error connecting to Plug wallet:', error);
+      console.error('❌ Exception in connectPlugWallet:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to connect to Plug wallet'
       };
+    } finally {
+      console.log('=== PLUG WALLET CONNECTION END ===');
     }
   }
 
