@@ -3,6 +3,7 @@ import { LandingPage } from '../components/LandingPage';
 import MainApp from '../components/MainApp';
 import { multiWalletService } from '../services/multiWalletService';
 import { toast } from '../hooks/use-toast';
+import { Button } from '../components/ui/button';
 
 const Index = () => {
   const [walletInfo, setWalletInfo] = useState<any>(null);
@@ -21,10 +22,20 @@ const Index = () => {
       console.log('Checking wallet connection...');
       const info = await multiWalletService.getCurrentWalletInfo();
       console.log('Wallet info received:', info);
+      console.log('Wallet info details:', {
+        isConnected: info?.isConnected,
+        principal: info?.principal,
+        accountId: info?.accountId,
+        walletName: info?.walletName
+      });
+      
       if (info?.isConnected) {
+        console.log('✅ Wallet already connected, setting state...');
         setWalletInfo(info);
         setShowLanding(false);
-        console.log('Wallet already connected, showing main app');
+        console.log('✅ State updated - showLanding: false, walletInfo set');
+      } else {
+        console.log('❌ Wallet not connected or connection invalid');
       }
     } catch (error) {
       console.error('Failed to check wallet connection:', error);
@@ -97,7 +108,15 @@ const Index = () => {
     // The wallet selector will be opened by the LandingPage component
   };
 
+  // Add debugging for render decisions
+  console.log('=== INDEX RENDER DECISION ===');
+  console.log('showLanding:', showLanding);
+  console.log('walletInfo:', walletInfo);
+  console.log('walletInfo?.isConnected:', walletInfo?.isConnected);
+  console.log('Condition (showLanding || !walletInfo?.isConnected):', (showLanding || !walletInfo?.isConnected));
+
   if (showLanding || !walletInfo?.isConnected) {
+    console.log('🔄 Rendering LandingPage');
     return (
       <LandingPage 
         onConnectWallet={handleWalletConnectionRequest}
@@ -108,12 +127,26 @@ const Index = () => {
     );
   }
 
-  return (
-    <MainApp 
-      walletInfo={walletInfo}
-      onDisconnect={handleDisconnect}
-    />
-  );
+  console.log('🔄 Rendering MainApp');
+  try {
+    return (
+      <MainApp 
+        walletInfo={walletInfo}
+        onDisconnect={handleDisconnect}
+      />
+    );
+  } catch (error) {
+    console.error('❌ Error rendering MainApp:', error);
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-red-800">Error Rendering App</h1>
+          <p className="text-red-600">{error instanceof Error ? error.message : 'Unknown error'}</p>
+          <Button onClick={() => window.location.reload()}>Reload Page</Button>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default Index;

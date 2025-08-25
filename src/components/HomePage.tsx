@@ -37,7 +37,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
             <Button 
               size="lg" 
               className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('clinical-trials')}
+              onClick={() => onNavigateToTab('trials')}
             >
               <Target className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Find Clinical Trials
@@ -46,7 +46,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
               size="lg" 
               variant="outline" 
               className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('agent-platform')}
+              onClick={() => onNavigateToTab('fetch-agents')}
             >
               <Brain className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Learn About AI Agents
@@ -55,19 +55,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToTab }) => {
               size="lg" 
               variant="outline" 
               className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('demo-conversations')}
+              onClick={() => onNavigateToTab('chat')}
             >
               <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              View Demo Conversations
+              Chat with AI Assistant
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
               className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-              onClick={() => onNavigateToTab('pricing')}
+              onClick={() => onNavigateToTab('analytics')}
             >
               <TrendingUp className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              View Pricing
+              View Analytics
             </Button>
           </div>
         </div>

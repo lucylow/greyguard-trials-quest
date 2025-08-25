@@ -532,34 +532,66 @@ export class MultiWalletService {
 
   // Get current wallet info
   public async getCurrentWalletInfo() {
-    if (!this.currentWallet) return null;
-
-    try {
-      switch (this.currentWallet) {
-        case 'plug':
-          if (this.isPlugInstalled() && this.isPlugConnected()) {
-            const plug = (window as any).ic?.plug || 
-                         (window as any).ic?.plugWallet ||
-                         (window as any).plug ||
-                         (window as any).PlugWallet;
-            
-            const principal = await plug.getPrincipal();
-            const accountId = await plug.getAccountId?.() || '';
-            
-            return {
-              principal: principal.toString(),
-              accountId: accountId || '',
-              isConnected: true,
-              walletName: 'Plug Wallet'
-            };
-          }
-          break;
-        // Add other wallet info retrieval logic here
+    // First check if we have a stored current wallet
+    if (this.currentWallet) {
+      try {
+        switch (this.currentWallet) {
+          case 'plug':
+            if (this.isPlugInstalled() && this.isPlugConnected()) {
+              const plug = (window as any).ic?.plug || 
+                           (window as any).ic?.plugWallet ||
+                           (window as any).plug ||
+                           (window as any).PlugWallet;
+              
+              const principal = await plug.getPrincipal();
+              const accountId = await plug.getAccountId?.() || '';
+              
+              return {
+                principal: principal.toString(),
+                accountId: accountId || '',
+                isConnected: true,
+                walletName: 'Plug Wallet'
+              };
+            }
+            break;
+          // Add other wallet info retrieval logic here
+        }
+      } catch (error) {
+        console.error('Error getting stored wallet info:', error);
       }
-    } catch (error) {
-      console.error('Error getting wallet info:', error);
     }
 
+    // If no stored wallet or stored wallet failed, check all wallets for existing connections
+    console.log('🔍 Checking all wallets for existing connections...');
+    
+    // Check Plug wallet
+    if (this.isPlugInstalled() && this.isPlugConnected()) {
+      try {
+        const plug = (window as any).ic?.plug || 
+                     (window as any).ic?.plugWallet ||
+                     (window as any).plug ||
+                     (window as any).PlugWallet;
+        
+        const principal = await plug.getPrincipal();
+        const accountId = await plug.getAccountId?.() || '';
+        
+        console.log('✅ Found existing Plug wallet connection');
+        this.currentWallet = 'plug';
+        
+        return {
+          principal: principal.toString(),
+          accountId: accountId || '',
+          isConnected: true,
+          walletName: 'Plug Wallet'
+        };
+      } catch (error) {
+        console.error('Error getting Plug wallet info:', error);
+      }
+    }
+
+    // Check other wallets here as they're implemented
+    // For now, just return null if no existing connections found
+    console.log('❌ No existing wallet connections found');
     return null;
   }
 
