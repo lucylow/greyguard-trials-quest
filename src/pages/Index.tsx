@@ -18,10 +18,13 @@ const Index = () => {
 
   const checkWalletConnection = async () => {
     try {
+      console.log('Checking wallet connection...');
       const info = await icpWalletService.getWalletInfo();
+      console.log('Wallet info received:', info);
       if (info?.isConnected) {
         setWalletInfo(info);
         setShowLanding(false);
+        console.log('Wallet already connected, showing main app');
       }
     } catch (error) {
       console.error('Failed to check wallet connection:', error);
@@ -29,22 +32,49 @@ const Index = () => {
   };
 
   const handleConnectWallet = async () => {
+    console.log('Connect wallet button clicked');
     setIsConnecting(true);
+    
     try {
+      console.log('Attempting to connect to wallet...');
+      
+      // Check if Plug is installed first
+      const isPlugInstalled = icpWalletService.isPlugInstalled();
+      if (!isPlugInstalled) {
+        console.log('Plug not installed, requesting installation');
+        icpWalletService.requestInstall();
+        toast({
+          title: "Plug Wallet Required",
+          description: "Please install the Plug wallet extension first, then try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const info = await icpWalletService.connect();
+      console.log('Connection result:', info);
+      
       if (info?.isConnected) {
+        console.log('Wallet connected successfully:', info);
         setWalletInfo(info);
         setShowLanding(false);
         toast({
-          title: "Wallet Connected!",
-          description: `Welcome! You can now access the full application.`,
+          title: "🎉 Wallet Connected Successfully!",
+          description: `Welcome to GreyGuard Trials! You can now access the full application.`,
+        });
+      } else {
+        console.log('Connection failed - no info returned');
+        toast({
+          title: "Connection Failed",
+          description: "Failed to connect wallet. Please check if Plug is unlocked and try again.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error('Connection error:', error);
       toast({
-        title: "Connection Failed",
-        description: "Failed to connect wallet. Please try again.",
+        title: "Connection Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred while connecting",
         variant: "destructive",
       });
     } finally {
@@ -52,13 +82,15 @@ const Index = () => {
     }
   };
 
-  const handleLaunchApp = () => {
+  const handleLaunchApp = async () => {
+    console.log('Launch app button clicked');
     // This will trigger the wallet connection flow
-    handleConnectWallet();
+    await handleConnectWallet();
   };
 
   const handleDisconnect = async () => {
     try {
+      console.log('Disconnecting wallet...');
       await icpWalletService.disconnect();
       setWalletInfo(null);
       setShowLanding(true);
@@ -82,6 +114,7 @@ const Index = () => {
       <LandingPage 
         onConnectWallet={handleConnectWallet}
         onLaunchApp={handleLaunchApp}
+        isConnecting={isConnecting}
       />
     );
   }

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { WalletSelector, ICPWallet } from './WalletSelector';
+import { multiWalletService } from '../services/multiWalletService';
 import { 
   Shield, 
   Lock, 
@@ -34,11 +36,54 @@ import {
 interface LandingPageProps {
   onConnectWallet: () => void;
   onLaunchApp: () => void;
+  isConnecting: boolean;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLaunchApp }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLaunchApp, isConnecting }) => {
   console.log('LandingPage component rendered!'); // Debug log
   
+  const [showWalletSelector, setShowWalletSelector] = useState(false);
+  const [wallets, setWallets] = useState<ICPWallet[]>([]);
+
+  // Get supported wallets when component mounts
+  React.useEffect(() => {
+    const supportedWallets = multiWalletService.getSupportedWallets();
+    setWallets(supportedWallets);
+  }, []);
+
+  const handleWalletSelect = async (walletId: string) => {
+    console.log('Selected wallet:', walletId);
+    
+    try {
+      const result = await multiWalletService.connectWallet(walletId);
+      
+      if (result.success && result.walletInfo) {
+        console.log('Wallet connected successfully:', result.walletInfo);
+        setShowWalletSelector(false);
+        // Call the parent's onConnectWallet to update the app state
+        onConnectWallet();
+      } else {
+        console.error('Wallet connection failed:', result.error);
+        // You could show an error toast here
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
+  };
+
+  const handleConnectWalletClick = () => {
+    // Refresh wallet status before showing selector
+    multiWalletService.refreshWalletStatus();
+    const updatedWallets = multiWalletService.getSupportedWallets();
+    setWallets(updatedWallets);
+    setShowWalletSelector(true);
+  };
+
+  const handleLaunchAppClick = () => {
+    // Launch app also opens wallet selector
+    handleConnectWalletClick();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
       {/* Background decorative elements - ICP themed */}
@@ -197,21 +242,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
             <Button 
               size="lg" 
               className="w-full sm:w-auto text-xl px-10 py-8 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 border-0 group"
-              onClick={onConnectWallet}
+              onClick={handleConnectWalletClick}
+              disabled={isConnecting}
             >
-              <Wallet className="mr-3 h-7 w-7" />
-              Connect Plug Wallet
-              <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+              {isConnecting ? (
+                <>
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <Wallet className="mr-3 h-7 w-7" />
+                  Connect ICP Wallet
+                  <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
             </Button>
             
             <Button 
               size="lg" 
               variant="outline" 
               className="w-full sm:w-auto text-xl px-10 py-8 border-3 border-orange-300 hover:border-orange-400 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm"
-              onClick={onLaunchApp}
+              onClick={handleLaunchAppClick}
+              disabled={isConnecting}
             >
-              <Lightning className="mr-3 h-7 w-7" />
-              Launch App
+              {isConnecting ? (
+                <>
+                  <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mr-3"></div>
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <Lightning className="mr-3 h-7 w-7" />
+                  Launch App
+                </>
+              )}
             </Button>
           </div>
 
@@ -349,7 +414,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
                 size="lg" 
                 variant="secondary" 
                 className="text-xl px-10 py-8 bg-white text-orange-600 hover:bg-slate-100 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
-                onClick={onConnectWallet}
+                onClick={handleConnectWalletClick}
               >
                 <Wallet className="mr-3 h-7 w-7" />
                 Connect Wallet & Start
@@ -394,6 +459,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onConnectWallet, onLau
           </div>
         </div>
       </footer>
+
+      {/* Wallet Selector Modal */}
+      <WalletSelector
+        isOpen={showWalletSelector}
+        onClose={() => setShowWalletSelector(false)}
+        onSelectWallet={handleWalletSelect}
+        wallets={wallets}
+        isConnecting={isConnecting}
+      />
     </div>
   );
 };
