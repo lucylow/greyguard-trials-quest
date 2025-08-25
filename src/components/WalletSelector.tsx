@@ -42,6 +42,9 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
   connectingWalletId
 }) => {
   const handleWalletSelect = (walletId: string) => {
+    // Always call onSelectWallet regardless of connection status
+    // This ensures the connection flow is triggered even for "connected" wallets
+    console.log('Wallet selected:', walletId, 'Current status:', wallets.find(w => w.id === walletId)?.isConnected);
     onSelectWallet(walletId);
   };
 
@@ -72,7 +75,7 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
                 key={wallet.id}
                 className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
                   wallet.isConnected
-                    ? 'border-green-500 bg-green-50'
+                    ? 'border-green-500 bg-green-50 hover:border-green-600 hover:bg-green-100'
                     : wallet.isInstalled
                     ? 'border-orange-200 bg-orange-50 hover:border-orange-400 hover:bg-orange-100'
                     : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
@@ -100,6 +103,11 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
                     <div>
                       <h3 className="font-semibold text-gray-900">{wallet.name}</h3>
                       <p className="text-sm text-gray-600">{wallet.description}</p>
+                      {wallet.isConnected && (
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Connected - Click to continue
+                        </p>
+                      )}
                     </div>
                   </div>
                   
@@ -139,6 +147,23 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
                         )}
                       </Button>
                     )}
+                    {wallet.isInstalled && wallet.isConnected && (
+                      <Button
+                        size="sm"
+                        variant="default"
+                        disabled={isDisabled}
+                        className="bg-green-500 hover:bg-green-600 text-white text-xs"
+                      >
+                        {isConnectingThisWallet ? (
+                          <>
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1"></div>
+                            Connecting...
+                          </>
+                        ) : (
+                          'Continue'
+                        )}
+                      </Button>
+                      )}
                   </div>
                 </div>
               </div>

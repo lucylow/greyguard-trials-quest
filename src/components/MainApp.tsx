@@ -219,20 +219,8 @@ const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
           </TabsContent>
 
           {/* Clinical Trials Tab */}
-          <TabsContent value="clinical-trials" className="space-y-6">
-            <ClinicalTrialsPage 
-              symptoms={symptoms}
-              setSymptoms={setSymptoms}
-              location={location}
-              setLocation={setLocation}
-              matches={matches}
-              selectedTrial={selectedTrial}
-              onTrialSelect={handleTrialSelect}
-              onSubmit={handleSubmit}
-              loading={loading}
-              chatHistory={chatHistory}
-              chatContainerRef={chatContainerRef}
-            />
+          <TabsContent value="trials" className="space-y-6">
+            <ClinicalTrialsPage />
           </TabsContent>
 
           {/* Agent Platform Tab */}

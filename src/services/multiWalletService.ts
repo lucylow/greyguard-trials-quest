@@ -91,14 +91,20 @@ export class MultiWalletService {
     if (!this.isPlugInstalled()) return false;
     
     try {
-      // Try multiple ways to check connection
+      // Try multiple ways to access Plug
       const plug = (window as any).ic?.plug || 
                    (window as any).ic?.plugWallet ||
                    (window as any).plug ||
                    (window as any).PlugWallet;
       
       if (plug && typeof plug.isConnected === 'function') {
-        return plug.isConnected();
+        // Only return true if we can actually get a principal
+        try {
+          const principal = plug.getPrincipal();
+          return !!principal;
+        } catch {
+          return false;
+        }
       }
       
       // Fallback: check if we have principal (indicates connection)
@@ -293,19 +299,32 @@ export class MultiWalletService {
         };
       }
       
-      // Check if already connected
+      // Always try to get current connection status first
       let isConnected = false;
+      let currentPrincipal = null;
+      
       try {
-        console.log('🔍 Checking if already connected...');
+        console.log('🔍 Checking current connection status...');
         if (typeof plug.isConnected === 'function') {
           console.log('Using plug.isConnected() method');
           isConnected = await plug.isConnected();
-        } else {
-          console.log('isConnected method not available, trying getPrincipal fallback');
-          // Fallback: try to get principal to check connection
-          const principal = await plug.getPrincipal();
-          isConnected = !!principal;
         }
+        
+        // Try to get principal regardless of isConnected status
+        try {
+          console.log('🔍 Attempting to get current principal...');
+          currentPrincipal = await plug.getPrincipal();
+          console.log('Current principal found:', currentPrincipal?.toString());
+        } catch (error) {
+          console.log('⚠️ No current principal found:', error);
+        }
+        
+        // If we have a principal, consider it connected
+        if (currentPrincipal) {
+          isConnected = true;
+          console.log('✅ Wallet appears to be connected with principal');
+        }
+        
       } catch (error) {
         console.log('⚠️ Error checking connection status:', error);
         isConnected = false;
@@ -313,32 +332,33 @@ export class MultiWalletService {
       
       console.log('📊 Plug wallet connection status:', isConnected);
       
-      if (isConnected) {
+      // If already connected and we have a principal, return success
+      if (isConnected && currentPrincipal) {
         try {
           console.log('🔄 Already connected, getting wallet info...');
-          const principal = await plug.getPrincipal();
           const accountId = await plug.getAccountId?.() || '';
           
-          console.log('✅ Already connected, got principal:', principal?.toString());
+          console.log('✅ Already connected, got principal:', currentPrincipal.toString());
           console.log('Account ID:', accountId);
+          
+          this.currentWallet = 'plug';
           
           return {
             success: true,
             walletInfo: {
-              principal: principal.toString(),
+              principal: currentPrincipal.toString(),
               accountId: accountId || '',
               isConnected: true,
               walletName: 'Plug Wallet'
             }
           };
         } catch (error) {
-          console.log('⚠️ Error getting principal from connected wallet:', error);
-          console.log('Continuing to request connection...');
+          console.log('⚠️ Error getting wallet info from connected wallet:', error);
           // Continue to request connection
         }
       }
 
-      // Request connection
+      // Request connection (either not connected or connection failed)
       console.log('🔌 Requesting connection to Plug wallet...');
       
       let connected = false;
