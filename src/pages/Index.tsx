@@ -1,215 +1,95 @@
-import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Shield, Database, Globe } from 'lucide-react';
-import { HomePage } from '../components/HomePage';
-import { ClinicalTrialsPage } from '../components/ClinicalTrialsPage';
-import { DecentralizedFeaturesPage } from '../components/DecentralizedFeaturesPage';
-import { ResourcesPage } from '../components/ResourcesPage';
-import { AgentPlatformPage } from '../components/AgentPlatformPage';
-import DemoConversationInterface from '../components/DemoConversationInterface';
-import PricingPage from '../components/PricingPage';
-import LanguageSelector from '../components/LanguageSelector';
-import WalletConnection from '../components/WalletConnection';
+import React, { useState, useEffect } from 'react';
+import { LandingPage } from '../components/LandingPage';
+import MainApp from '../components/MainApp';
+import { icpWalletService, ICPWalletInfo } from '../services/icpWalletService';
+import { toast } from '../hooks/use-toast';
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('home');
-  
-  // Clinical Trials state
-  const [symptoms, setSymptoms] = useState('');
-  const [location, setLocation] = useState('');
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedTrial, setSelectedTrial] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]);
-  const chatContainerRef = useRef(null);
+  const [walletInfo, setWalletInfo] = useState<ICPWalletInfo | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
 
-  // ZKP Demo state
-  const [zkpForm, setZkpForm] = useState({
-    patientId: '',
-    encryptedProfile: '',
-    condition: '',
-    age: '',
-    location: ''
-  });
-  const [generatedProof, setGeneratedProof] = useState(null);
-  const [verifyPatientId, setVerifyPatientId] = useState('');
-  const [verificationResult, setVerificationResult] = useState(null);
-  const [zkpLoading, setZkpLoading] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
+  useEffect(() => {
+    // Check if wallet is already connected on component mount
+    checkWalletConnection();
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', { symptoms, location });
-  };
-
-  const handleTrialSelect = (trial) => {
-    setSelectedTrial(trial);
-  };
-
-  // ZKP Demo functions
-  const generateZKProof = async () => {
-    if (!zkpForm.patientId || !zkpForm.condition) {
-      return;
-    }
-    setZkpLoading(true);
+  const checkWalletConnection = async () => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const proof = {
-        proofId: `zk-proof-${Math.random().toString(16).substr(2, 6).toUpperCase()}`,
-        patientId: zkpForm.patientId,
-        timestamp: new Date().toISOString(),
-        btcAnchor: `${Math.random().toString(16).substr(2, 8)}...`,
-        status: 'verified'
-      };
-      setGeneratedProof(proof);
+      const info = await icpWalletService.getWalletInfo();
+      if (info?.isConnected) {
+        setWalletInfo(info);
+        setShowLanding(false);
+      }
     } catch (error) {
-      console.error('Error generating proof:', error);
-    } finally {
-      setZkpLoading(false);
+      console.error('Failed to check wallet connection:', error);
     }
   };
 
-  const verifyZKProof = async () => {
-    if (!verifyPatientId) {
-      return;
-    }
-    setVerifyLoading(true);
+  const handleConnectWallet = async () => {
+    setIsConnecting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const isValid = generatedProof && generatedProof.patientId === verifyPatientId;
-      setVerificationResult({
-        valid: isValid,
-        message: isValid ? 
-          "✓ Proof valid. Patient eligibility confirmed without exposing health data" :
-          "✗ Proof not found or invalid"
+      const info = await icpWalletService.connect();
+      if (info?.isConnected) {
+        setWalletInfo(info);
+        setShowLanding(false);
+        toast({
+          title: "Wallet Connected!",
+          description: `Welcome! You can now access the full application.`,
+        });
+      }
+    } catch (error) {
+      console.error('Connection error:', error);
+      toast({
+        title: "Connection Failed",
+        description: "Failed to connect wallet. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleLaunchApp = () => {
+    // This will trigger the wallet connection flow
+    handleConnectWallet();
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await icpWalletService.disconnect();
+      setWalletInfo(null);
+      setShowLanding(true);
+      toast({
+        title: "Wallet Disconnected",
+        description: "You have been returned to the landing page.",
       });
     } catch (error) {
-      console.error('Error verifying proof:', error);
-    } finally {
-      setVerifyLoading(false);
+      console.error('Disconnection error:', error);
+      toast({
+        title: "Disconnection Error",
+        description: "An error occurred while disconnecting",
+        variant: "destructive",
+      });
     }
   };
 
+  // Show landing page if no wallet is connected
+  if (showLanding || !walletInfo?.isConnected) {
+    return (
+      <LandingPage 
+        onConnectWallet={handleConnectWallet}
+        onLaunchApp={handleLaunchApp}
+      />
+    );
+  }
+
+  // Show main app if wallet is connected
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-slate-900 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <div className="text-center sm:text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-white">GreyGuard Trials</h1>
-                <p className="text-xs sm:text-sm text-white opacity-90">Decentralized Clinical Trial Matching</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <LanguageSelector variant="compact" />
-              <WalletConnection variant="compact" />
-            </div>
-          </div>
-          
-          {/* ICP Blockchain Indicators */}
-          <div className="flex items-center justify-center space-x-6 mt-3 pt-3 border-t border-slate-700">
-            <div className="flex items-center space-x-2 text-white">
-              <Lock className="h-4 w-4 text-slate-300" />
-              <span className="text-sm">Privacy Status</span>
-            </div>
-            <div className="flex items-center space-x-2 text-white">
-              <Shield className="h-4 w-4 text-slate-300" />
-              <span className="text-sm">ZK Proofs</span>
-            </div>
-            <div className="flex items-center space-x-2 text-white">
-              <Database className="h-4 w-4 text-slate-300" />
-              <span className="text-sm">ICP Anchored</span>
-            </div>
-            <div className="flex items-center space-x-2 text-white">
-              <Globe className="h-4 w-4 text-slate-300" />
-              <span className="text-sm">Decentralized</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2">
-            <TabsTrigger value="home" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Home</TabsTrigger>
-            <TabsTrigger value="clinical-trials" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Clinical Trials</TabsTrigger>
-            <TabsTrigger value="agent-platform" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Agent Platform</TabsTrigger>
-            <TabsTrigger value="decentralized" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Decentralized</TabsTrigger>
-            <TabsTrigger value="demo-conversations" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Demo</TabsTrigger>
-            <TabsTrigger value="pricing" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Pricing</TabsTrigger>
-          </TabsList>
-
-          {/* Home Tab */}
-          <TabsContent value="home" className="space-y-6">
-            <HomePage onNavigateToTab={setActiveTab} />
-          </TabsContent>
-
-          {/* Clinical Trials Tab */}
-          <TabsContent value="clinical-trials" className="space-y-6">
-            <ClinicalTrialsPage 
-              symptoms={symptoms}
-              setSymptoms={setSymptoms}
-              location={location}
-              setLocation={setLocation}
-              matches={matches}
-              selectedTrial={selectedTrial}
-              onTrialSelect={handleTrialSelect}
-              onSubmit={handleSubmit}
-              loading={loading}
-              chatHistory={chatHistory}
-              chatContainerRef={chatContainerRef}
-            />
-          </TabsContent>
-
-          {/* Agent Platform Tab */}
-          <TabsContent value="agent-platform" className="space-y-6">
-            <AgentPlatformPage />
-          </TabsContent>
-
-          {/* Decentralized Features Tab */}
-          <TabsContent value="decentralized" className="space-y-6">
-            <DecentralizedFeaturesPage 
-              zkpForm={zkpForm}
-              setZkpForm={setZkpForm}
-              generatedProof={generatedProof}
-              verifyPatientId={verifyPatientId}
-              setVerifyPatientId={setVerifyPatientId}
-              verificationResult={verificationResult}
-              zkpLoading={zkpLoading}
-              verifyLoading={verifyLoading}
-              generateZKProof={generateZKProof}
-              verifyZKProof={verifyZKProof}
-            />
-          </TabsContent>
-
-          {/* Demo Conversations Tab */}
-          <TabsContent value="demo-conversations" className="space-y-6">
-            <DemoConversationInterface />
-          </TabsContent>
-
-          {/* Pricing Tab */}
-          <TabsContent value="pricing" className="space-y-6">
-            <PricingPage />
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-muted/50 border-t mt-12">
-        <div className="container mx-auto px-4 py-4">
-          <div className="text-center text-sm text-muted-foreground">
-            Powered by Fetch.ai Agents & Internet Computer Protocol (ICP) • 
-            Your health data remains encrypted and under your control
-          </div>
-        </div>
-      </footer>
-    </div>
+    <MainApp 
+      walletInfo={walletInfo}
+      onDisconnect={handleDisconnect}
+    />
   );
 };
 

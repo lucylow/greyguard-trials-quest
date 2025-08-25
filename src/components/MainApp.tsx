@@ -1,0 +1,245 @@
+import React, { useState, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Lock, Shield, Database, Globe, Wallet, LogOut } from 'lucide-react';
+import { HomePage } from './HomePage';
+import { ClinicalTrialsPage } from './ClinicalTrialsPage';
+import { DecentralizedFeaturesPage } from './DecentralizedFeaturesPage';
+import { ResourcesPage } from './ResourcesPage';
+import { AgentPlatformPage } from './AgentPlatformPage';
+import DemoConversationInterface from './DemoConversationInterface';
+import PricingPage from './PricingPage';
+import LanguageSelector from './LanguageSelector';
+import WalletConnection from './WalletConnection';
+import { ICPWalletInfo } from '../services/icpWalletService';
+
+interface MainAppProps {
+  walletInfo: ICPWalletInfo;
+  onDisconnect: () => void;
+}
+
+const MainApp: React.FC<MainAppProps> = ({ walletInfo, onDisconnect }) => {
+  const [activeTab, setActiveTab] = useState('home');
+  
+  // Clinical Trials state
+  const [symptoms, setSymptoms] = useState('');
+  const [location, setLocation] = useState('');
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedTrial, setSelectedTrial] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
+  const chatContainerRef = useRef(null);
+
+  // ZKP Demo state
+  const [zkpForm, setZkpForm] = useState({
+    patientId: '',
+    encryptedProfile: '',
+    condition: '',
+    age: '',
+    location: ''
+  });
+  const [generatedProof, setGeneratedProof] = useState(null);
+  const [verifyPatientId, setVerifyPatientId] = useState('');
+  const [verificationResult, setVerificationResult] = useState(null);
+  const [zkpLoading, setZkpLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', { symptoms, location });
+  };
+
+  const handleTrialSelect = (trial) => {
+    setSelectedTrial(trial);
+  };
+
+  // ZKP Demo functions
+  const generateZKProof = async () => {
+    if (!zkpForm.patientId || !zkpForm.condition) {
+      return;
+    }
+    setZkpLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const proof = {
+        proofId: `zk-proof-${Math.random().toString(16).substr(2, 6).toUpperCase()}`,
+        patientId: zkpForm.patientId,
+        timestamp: new Date().toISOString(),
+        btcAnchor: `${Math.random().toString(16).substr(2, 8)}...`,
+        status: 'verified'
+      };
+      setGeneratedProof(proof);
+    } catch (error) {
+      console.error('Error generating proof:', error);
+    } finally {
+      setZkpLoading(false);
+    }
+  };
+
+  const verifyZKProof = async () => {
+    if (!verifyPatientId) {
+      return;
+    }
+    setVerifyLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const isValid = generatedProof && generatedProof.patientId === verifyPatientId;
+      setVerificationResult({
+        valid: isValid,
+        message: isValid ? 
+          "✓ Proof valid. Patient eligibility confirmed without exposing health data" :
+          "✗ Proof not found or invalid"
+      });
+    } catch (error) {
+      console.error('Error verifying proof:', error);
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const formatPrincipal = (principal: string) => {
+    if (principal.length <= 10) return principal;
+    return `${principal.slice(0, 5)}...${principal.slice(-5)}`;
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-slate-900 text-white shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="text-center sm:text-left">
+                <h1 className="text-xl sm:text-2xl font-bold text-white">GreyGuard Trials</h1>
+                <p className="text-xs sm:text-sm text-white opacity-90">Decentralized Clinical Trial Matching</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <LanguageSelector variant="compact" />
+              
+              {/* Connected Wallet Display */}
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 bg-green-600 px-3 py-2 rounded-lg">
+                  <Wallet className="h-4 w-4 text-white" />
+                  <span className="text-sm font-medium text-white">
+                    {formatPrincipal(walletInfo.principal)}
+                  </span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-slate-700 text-white border-slate-500 hover:bg-slate-600"
+                  onClick={onDisconnect}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Disconnect
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* ICP Blockchain Indicators */}
+          <div className="flex items-center justify-center space-x-6 mt-3 pt-3 border-t border-slate-700">
+            <div className="flex items-center space-x-2 text-white">
+              <Lock className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">Privacy Status</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Shield className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">ZK Proofs</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Database className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">ICP Anchored</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white">
+              <Globe className="h-4 w-4 text-slate-300" />
+              <span className="text-sm">Decentralized</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2">
+            <TabsTrigger value="home" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Home</TabsTrigger>
+            <TabsTrigger value="clinical-trials" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Clinical Trials</TabsTrigger>
+            <TabsTrigger value="agent-platform" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Agent Platform</TabsTrigger>
+            <TabsTrigger value="decentralized" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Decentralized</TabsTrigger>
+            <TabsTrigger value="demo-conversations" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Demo</TabsTrigger>
+            <TabsTrigger value="pricing" className="text-xs sm:text-sm px-2 sm:px-3 py-2">Pricing</TabsTrigger>
+          </TabsList>
+
+          {/* Home Tab */}
+          <TabsContent value="home" className="space-y-6">
+            <HomePage onNavigateToTab={setActiveTab} />
+          </TabsContent>
+
+          {/* Clinical Trials Tab */}
+          <TabsContent value="clinical-trials" className="space-y-6">
+            <ClinicalTrialsPage 
+              symptoms={symptoms}
+              setSymptoms={setSymptoms}
+              location={location}
+              setLocation={setLocation}
+              matches={matches}
+              selectedTrial={selectedTrial}
+              onTrialSelect={handleTrialSelect}
+              onSubmit={handleSubmit}
+              loading={loading}
+              chatHistory={chatHistory}
+              chatContainerRef={chatContainerRef}
+            />
+          </TabsContent>
+
+          {/* Agent Platform Tab */}
+          <TabsContent value="agent-platform" className="space-y-6">
+            <AgentPlatformPage />
+          </TabsContent>
+
+          {/* Decentralized Features Tab */}
+          <TabsContent value="decentralized" className="space-y-6">
+            <DecentralizedFeaturesPage 
+              zkpForm={zkpForm}
+              setZkpForm={setZkpForm}
+              generatedProof={generatedProof}
+              verifyPatientId={verifyPatientId}
+              setVerifyPatientId={setVerifyPatientId}
+              verificationResult={verificationResult}
+              zkpLoading={zkpLoading}
+              verifyLoading={verifyLoading}
+              generateZKProof={generateZKProof}
+              verifyZKProof={verifyZKProof}
+            />
+          </TabsContent>
+
+          {/* Demo Conversations Tab */}
+          <TabsContent value="demo-conversations" className="space-y-6">
+            <DemoConversationInterface />
+          </TabsContent>
+
+          {/* Pricing Tab */}
+          <TabsContent value="pricing" className="space-y-6">
+            <PricingPage />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-muted/50 border-t mt-12">
+        <div className="container mx-auto px-4 py-4">
+          <div className="text-center text-sm text-muted-foreground">
+            Powered by Fetch.ai Agents & Internet Computer Protocol (ICP) • 
+            Your health data remains encrypted and under your control
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default MainApp;
